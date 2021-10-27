@@ -1,0 +1,15 @@
+const router = require("express").Router(),
+  jwt = require("jsonwebtoken");
+
+module.exports = function (req, res, next) {
+  const token = req.header("auth_token");
+  if (!token) return res.status(401).send("Please log in");
+
+  try {
+    const verifiedUser = jwt.verify(token, process.env.Token_Secret);
+    req.user = verifiedUser;
+    next();
+  } catch (err) {
+    res.status(400).send("Invalid Token");
+  }
+};
