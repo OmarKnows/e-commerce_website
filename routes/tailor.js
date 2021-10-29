@@ -3,12 +3,12 @@ const router = require("express").Router(),
   Tailor = require("../models/Tailor"),
   verify = require("./verifyToken");
 //get all tailors
-router.get("/", verify, async (req, res) => {
+router.get("/", verify, async (req, res, next) => {
   try {
     const showAllTailors = await Tailor.find();
     res.json(showAllTailors);
   } catch (err) {
-    res.status(400).send(err);
+    next(err);
   }
 });
 
@@ -18,7 +18,7 @@ router.get("/:id", verify, async (req, res) => {
     const getOneTailor = await Tailor.findById(req.params.id);
     res.json(getOneTailor);
   } catch (err) {
-    res.status(400).send(err);
+    next(err);
   }
 });
 module.exports = router;

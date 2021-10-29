@@ -16,6 +16,16 @@ app.use(express.json());
 app.use("/auth", auth);
 app.use("/tailors", tailors);
 
+app.use((req, res, next) => {
+  const err = new Error("Page not found");
+  err.status = 404;
+  next(err);
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).send({ error: err.message });
+});
+
 const port = process.env.PORT || 3000;
 //running server
 app.listen(port, () => {
