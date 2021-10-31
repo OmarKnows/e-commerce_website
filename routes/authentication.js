@@ -101,7 +101,7 @@ async function tailorLogIn(req, res, next) {
       foundTailor.password
     );
     if (!validPass) throw new Error("passowrd didn't match");
-    createToken(res, foundTailor._id, foundTailor.username); // assign a token for each user
+    createToken(res, foundTailor._id, foundTailor.username, req.body.type); // assign a token for each user
   } catch (err) {
     next(err);
   }
@@ -117,15 +117,15 @@ async function userLogIn(req, res, next) {
       foundUser.password
     );
     if (!validPass) throw new Error("passowrd didn't match");
-    createToken(res, foundUser._id, foundUser.username); // assign a token for each user
+    createToken(res, foundUser._id, foundUser.username, req.body.type); // assign a token for each user
   } catch (err) {
     next(err);
   }
 }
 
-function createToken(res, userId, username) {
+function createToken(res, userId, username, type) {
   const token = jwt.sign(
-    { _id: userId, username: username },
+    { _id: userId, username: username, type: type },
     process.env.Token_Secret
   );
   res.json({ token: token });
