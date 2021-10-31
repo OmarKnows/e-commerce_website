@@ -1,7 +1,8 @@
 const router = require("express").Router(),
   mongoose = require("mongoose"),
   Tailor = require("../models/Tailor"),
-  verify = require("./verifyToken");
+  verify = require("./verifyToken"),
+  { userUpdateValidationSchema } = require("../models/joiValidation");
 
 //get all tailors
 router.get("/", verify, async (req, res, next) => {
@@ -24,7 +25,7 @@ router.get("/", verify, async (req, res, next) => {
 });
 
 //get only one tailor ====>Tailor Profile also
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", verify, async (req, res, next) => {
   try {
     const getOneTailor = await Tailor.findById(req.params.id);
     res.json(getOneTailor);
@@ -33,9 +34,40 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+// update tailor info
+router.patch("/:id", verify, async (req, res, next) => {
+  // validation for the info to be updated
+  const { error } = userUpdateValidationSchema({
+    username: req.body.username,
+    email: req.body.email,
+  });
+  if (error) return next(error.details[0]);
 
-router.patch("/:id", async (req,res, next)){
-  findByIdAndUpdate(id, ...)
-}
+  try {
+    if (req.params.id !== req.user._id)
+      throw new Error("Youd don't have permission"); ////// Tailor can only update himself or Admin
+
+    const updates = req.body;
+    const updatedTailor = await Tailor.findByIdAndUpdate(req.user._id, updates);
+    if (!updatedTailor) return next(); // if the user does not exist
+    res.json(updatedTailor);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// delete tailor
+router.delete("/:id", verify, async (req, res, next) => {
+  try {
+    if (req.params.id !== req.user._id)
+      throw new Error("Youd don't have permission"); ////// Tailor can only delete himself or Admin
+
+    const deletedTailor = await Tailor.findByIdAndDelete(req.user._id);
+    if (!deletedTailor) return next(); // if the user does not exist
+    res.json(deletedTailor);
+  } catch (err) {
+    next(err);
+  }
+});
 
 module.exports = router;

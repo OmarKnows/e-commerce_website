@@ -9,6 +9,14 @@ const userRegisterValidationSchema = (data) => {
   return schema.validate(data);
 };
 
+const userUpdateValidationSchema = (data) => {
+  const schema = Joi.object({
+    username: Joi.string().min(6).required(),
+    email: Joi.string().min(6).required().email(),
+  });
+  return schema.validate(data);
+};
+
 const userLoginValidationSchema = (data) => {
   const schema = Joi.object({
     email: Joi.string().min(6).required().email(),
@@ -20,4 +28,5 @@ const userLoginValidationSchema = (data) => {
 module.exports = {
   userRegisterValidationSchema,
   userLoginValidationSchema,
+  userUpdateValidationSchema,
 };
