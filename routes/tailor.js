@@ -24,7 +24,7 @@ router.get("/", verify, async (req, res, next) => {
   }
 });
 
-//get only one tailor ====>Tailor Profile also
+//get only one tailor to be accessed from any other users
 router.get("/:id", verify, async (req, res, next) => {
   try {
     const getOneTailor = await Tailor.findById(req.params.id);
@@ -34,8 +34,20 @@ router.get("/:id", verify, async (req, res, next) => {
   }
 });
 
-// update tailor info
-router.patch("/:id", verify, async (req, res, next) => {
+//Tailor Profile only accessed by himself or Admin
+router.get("/:id/profile", verify, async (req, res, next) => {
+  try {
+    if (req.params.id !== req.user._id)
+      throw new Error("Youd don't have permission");
+    const getTailorProfile = await Tailor.findById(req.user._id);
+    res.json(getTailorProfile);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// update tailor info only accessed by himself or Admin
+router.patch("/:id/profile", verify, async (req, res, next) => {
   // validation for the info to be updated
   const { error } = userUpdateValidationSchema({
     username: req.body.username,
@@ -56,8 +68,9 @@ router.patch("/:id", verify, async (req, res, next) => {
   }
 });
 
-// delete tailor
-router.delete("/:id", verify, async (req, res, next) => {
+// delete tailor only accessed by himself or Admin
+router.delete("/:id/profile", verify, async (req, res, next) => {
+  // we need to delete token from client to make sure not returning null values
   try {
     if (req.params.id !== req.user._id)
       throw new Error("Youd don't have permission"); ////// Tailor can only delete himself or Admin
