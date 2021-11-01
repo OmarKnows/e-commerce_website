@@ -10,29 +10,29 @@ const router = require("express").Router(),
   } = require("../models/joiValidation");
 
 router.post("/register", async (req, res, next) => {
-  // Validating any user registration based on his username, email and password
-  const { username, email, password, type } = req.body;
-  const { error } = userRegisterValidationSchema({
-    username: username,
-    email: email,
-    password: password,
-  });
-  if (error) return next(error.details[0]); // ===> error when username, email, password not meet with validation schema
+  try {
+    const { error } = userRegisterValidationSchema(req.body); // validating body based on type
+    if (error) return next(error.details[0]);
 
-  //hashing
-  const PlainPassword = req.body.password,
-    saltRounds = 10,
-    salt = await bcrypt.genSalt(saltRounds),
-    anyUserHashedPassword = await bcrypt.hash(PlainPassword, salt);
+    //hashing password
+    const PlainPassword = req.body.password,
+      saltRounds = 10,
+      salt = await bcrypt.genSalt(saltRounds),
+      anyUserHashedPassword = await bcrypt.hash(PlainPassword, salt);
 
-  //user type
-  const userType = type.toLowerCase();
-  if (userType == "tailor")
-    return creatNewTailor(req, res, next, anyUserHashedPassword);
-  else if (userType == "user")
-    return creatNewUser(req, res, next, anyUserHashedPassword);
-  else if (userType == "vendor") res.json({ message: "hi from vendor" });
-  else return next();
+    //user type
+    const userType = req.body.type.toLowerCase();
+
+    if (userType == "tailor") {
+      return creatNewTailor(req, res, next, anyUserHashedPassword);
+    } else if (userType == "user") {
+      return creatNewUser(req, res, next, anyUserHashedPassword);
+    } else if (userType == "vendor") {
+      res.json({ message: "hi from vendor" });
+    } else return next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.post("/login", async (req, res, next) => {
@@ -55,7 +55,8 @@ router.post("/login", async (req, res, next) => {
 
 // Helper functions
 async function creatNewTailor(req, res, next, anyUserHashedPassword) {
-  const { username, email, location } = req.body;
+  const { username, email, location, phone, description, tailorType } =
+    req.body;
   try {
     const alreadyExist = await Tailor.findOne({ email: email }); // user already exists
     if (alreadyExist) throw new Error("This tailor already Exists");
@@ -65,6 +66,9 @@ async function creatNewTailor(req, res, next, anyUserHashedPassword) {
       password: anyUserHashedPassword,
       email: email,
       location: location,
+      tailorType: tailorType,
+      phone: phone,
+      description: description,
     });
     const savedTailor = await newTailor.save();
     res.json({ NewUser: savedTailor._id, username: username });

@@ -13,13 +13,25 @@ const tailorSchema = new mongoose.Schema({
     max: 1024,
     min: 6,
   },
-
   email: {
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+  },
+  tailorType: {
+    type: [String],
+    default: ["women", "men"],
+    required: true,
+  },
+  phone: {
+    type: Number,
+    required: true,
+  },
   location: {
     type: String,
+    required: true,
   },
 });
 

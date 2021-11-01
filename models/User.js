@@ -17,6 +17,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  location: {
+    type: String,
+  },
   img: {},
   orders: {},
   wishlist: {},
