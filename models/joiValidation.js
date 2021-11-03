@@ -1,7 +1,8 @@
 const Joi = require("joi");
 
 const userRegisterValidationSchema = (data) => {
-  const userType = data.type.toLowerCase();
+  const userType = data.type;
+
   if (userType === "user") {
     // user validation
     const schema = Joi.object({
@@ -10,7 +11,7 @@ const userRegisterValidationSchema = (data) => {
       password: Joi.string().min(6).required(),
       location: Joi.string().required(),
       phone: Joi.number().min(6).required(),
-      type: Joi.string(),
+      type: Joi.string().required(),
     });
     return schema.validate(data);
   } else if (userType === "tailor") {
@@ -23,18 +24,22 @@ const userRegisterValidationSchema = (data) => {
       phone: Joi.number().min(6).required(),
       description: Joi.string().min(6).required(),
       tailorType: Joi.string().min(3).required(),
-      type: Joi.string(),
+      type: Joi.string().required(),
     });
     return schema.validate(data);
   } else {
-    throw new Error("Incorrect Type");
+    throw new Error("Please Insert The Correct Type");
   }
 };
 
 const userUpdateValidationSchema = (data) => {
   const schema = Joi.object({
-    username: Joi.string().min(6).required(),
-    email: Joi.string().min(6).required().email(),
+    username: Joi.string().min(6),
+    email: Joi.string().min(6).email(),
+    location: Joi.string(),
+    phone: Joi.number().min(6),
+    description: Joi.string().min(6),
+    tailorType: Joi.string().min(3),
   });
   return schema.validate(data);
 };
@@ -43,6 +48,7 @@ const userLoginValidationSchema = (data) => {
   const schema = Joi.object({
     email: Joi.string().min(6).required().email(),
     password: Joi.string().min(6).required(),
+    type: Joi.string().required(),
   });
   return schema.validate(data);
 };

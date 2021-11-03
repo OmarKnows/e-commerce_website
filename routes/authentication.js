@@ -23,11 +23,11 @@ router.post("/register", async (req, res, next) => {
     //user type
     const userType = req.body.type.toLowerCase();
 
-    if (userType == "tailor") {
+    if (userType === "tailor") {
       return creatNewTailor(req, res, next, anyUserHashedPassword);
-    } else if (userType == "user") {
+    } else if (userType === "user") {
       return creatNewUser(req, res, next, anyUserHashedPassword);
-    } else if (userType == "vendor") {
+    } else if (userType === "vendor") {
       res.json({ message: "hi from vendor" });
     } else return next();
   } catch (err) {
@@ -36,21 +36,21 @@ router.post("/register", async (req, res, next) => {
 });
 
 router.post("/login", async (req, res, next) => {
-  const { email, password, type } = req.body;
-  const { error } = userLoginValidationSchema({
-    email: email,
-    password: password,
-  });
+  try {
+    const { error } = userLoginValidationSchema(req.body);
+    if (error) return next(error.details[0]); // ===> error when username, email, password not meet with validation schema
 
-  //user type
-  const userType = type.toLowerCase();
+    // user type
+    const userType = req.body.type;
 
-  if (error) return next(error.details[0]); // ===> error when username, email, password not meet with validation schema
-
-  if (userType == "tailor") return tailorLogIn(req, res, next);
-  else if (userType == "user") return userLogIn(req, res, next);
-  else if (userType == "vendor") return res.json({ message: "hi from vendor" });
-  else return next();
+    if (userType === "tailor") return tailorLogIn(req, res, next);
+    else if (userType === "user") return userLogIn(req, res, next);
+    else if (userType === "vendor")
+      return res.json({ message: "hi from vendor" });
+    else return next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Helper functions
@@ -130,7 +130,8 @@ async function userLogIn(req, res, next) {
 function createToken(res, userId, username, type) {
   const token = jwt.sign(
     { _id: userId, username: username, type: type },
-    process.env.Token_Secret
+    process.env.Token_Secret,
+    { expiresIn: "1h" }
   );
   res.json({ token: token });
 }

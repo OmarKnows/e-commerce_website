@@ -21,8 +21,7 @@ const tailorSchema = new mongoose.Schema({
     type: String,
   },
   tailorType: {
-    type: [String],
-    default: ["women", "men"],
+    type: String,
     required: true,
   },
   phone: {
