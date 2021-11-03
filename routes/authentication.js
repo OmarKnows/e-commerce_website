@@ -1,13 +1,12 @@
-const router = require("express").Router(),
-  jwt = require("jsonwebtoken"),
-  bcrypt = require("bcrypt"),
-  mongoose = require("mongoose"),
-  User = require("../models/User"),
-  Tailor = require("../models/Tailor"),
-  {
-    userLoginValidationSchema,
-    userRegisterValidationSchema,
-  } = require("../models/joiValidation");
+const router = require("express").Router();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const User = require("../models/User");
+const Tailor = require("../models/Tailor");
+const {
+  userLoginValidationSchema,
+  userRegisterValidationSchema,
+} = require("../models/joiValidation");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -21,7 +20,7 @@ router.post("/register", async (req, res, next) => {
       anyUserHashedPassword = await bcrypt.hash(PlainPassword, salt);
 
     //user type
-    const userType = req.body.type.toLowerCase();
+    const userType = req.body.type;
 
     if (userType === "tailor") {
       return creatNewTailor(req, res, next, anyUserHashedPassword);

@@ -1,8 +1,7 @@
-const router = require("express").Router(),
-  mongoose = require("mongoose"),
-  Tailor = require("../models/Tailor"),
-  verify = require("./verifyToken"),
-  { userUpdateValidationSchema } = require("../models/joiValidation");
+const router = require("express").Router();
+const Tailor = require("../models/Tailor");
+const verify = require("./verifyToken");
+const { userUpdateValidationSchema } = require("../models/joiValidation");
 
 //get all tailors
 router.get("/", verify, async (req, res, next) => {

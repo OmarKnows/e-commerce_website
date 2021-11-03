@@ -1,9 +1,10 @@
-const express = require("express"),
-  app = express();
-(dotenv = require("dotenv")),
-  (mongoose = require("mongoose")),
-  (auth = require("./routes/authentication")),
-  (tailors = require("./routes/tailor"));
+const express = require("express");
+const app = express();
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const auth = require("./routes/authentication");
+const tailors = require("./routes/tailor");
+const users = require("./routes/user");
 
 dotenv.config();
 // connecting to db
@@ -15,6 +16,7 @@ app.use(express.json());
 //routes middlewares
 app.use("/auth", auth);
 app.use("/tailors", tailors);
+app.use("/users", users);
 
 app.use((req, res, next) => {
   const err = new Error("Page not found");
