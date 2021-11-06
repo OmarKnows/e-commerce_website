@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/User");
-const verify = require("./verifyToken");
-const { userUpdateValidationSchema } = require("../models/joiValidation");
+const verify = require("../controllers/verifyToken");
+const { userUpdateValidationSchema } = require("../controllers/joiValidation");
 
 //User Profile only accessed by himself or Admin
 router.get("/:id/profile", verify, async (req, res, next) => {
