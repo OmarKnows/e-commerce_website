@@ -6,27 +6,25 @@ const { userUpdateValidationSchema } = require("../models/joiValidation");
 //User Profile only accessed by himself or Admin
 router.get("/:id/profile", verify, async (req, res, next) => {
   try {
-    if (req.params.id !== req.user._id)
+    if (req.params.id !== req.user._id || req.user.type !== "user")
       throw new Error("Youd don't have permission");
     const getUserProfile = await User.findById(req.user._id);
     res.json(getUserProfile);
   } catch (err) {
     next(err);
-    users;
   }
 });
 
 // update user info only accessed by himself or Admin
 router.patch("/:id/profile", verify, async (req, res, next) => {
   // validation for the info to be updated
-  const { error } = userUpdateValidationSchema({
-    username: req.body.username,
-    email: req.body.email,
-  });
+  const { error } = userUpdateValidationSchema(
+    req.body
+  );
   if (error) return next(error.details[0]);
 
   try {
-    if (req.params.id !== req.user._id)
+    if (req.params.id !== req.user._id || req.user.type !== "user")
       throw new Error("Youd don't have permission"); ////// user can only update himself or Admin
 
     const updates = req.body;
@@ -42,7 +40,7 @@ router.patch("/:id/profile", verify, async (req, res, next) => {
 router.delete("/:id/profile", verify, async (req, res, next) => {
   // we need to delete token from client to make sure not returning null values
   try {
-    if (req.params.id !== req.user._id)
+    if (req.params.id !== req.user._id || req.user.type !== "user")
       throw new Error("Youd don't have permission"); ////// user can only delete himself or Admin
 
     const deletedUser = await User.findByIdAndDelete(req.user._id);

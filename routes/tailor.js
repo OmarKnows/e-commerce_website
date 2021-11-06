@@ -36,7 +36,7 @@ router.get("/:id", verify, async (req, res, next) => {
 //Tailor Profile only accessed by himself or Admin
 router.get("/:id/profile", verify, async (req, res, next) => {
   try {
-    if (req.params.id !== req.user._id)
+    if (req.params.id !== req.user._id || req.user.type !== "tailor")
       throw new Error("Youd don't have permission");
     const getTailorProfile = await Tailor.findById(req.user._id);
     res.json(getTailorProfile);
@@ -48,14 +48,13 @@ router.get("/:id/profile", verify, async (req, res, next) => {
 // update tailor info only accessed by himself or Admin
 router.patch("/:id/profile", verify, async (req, res, next) => {
   // validation for the info to be updated
-  const { error } = userUpdateValidationSchema({
-    username: req.body.username,
-    email: req.body.email,
-  });
+  const { error } = userUpdateValidationSchema(
+    req.body
+  );
   if (error) return next(error.details[0]);
 
   try {
-    if (req.params.id !== req.user._id)
+    if (req.params.id !== req.user._id || req.user.type !== "tailor")
       throw new Error("Youd don't have permission"); ////// Tailor can only update himself or Admin
 
     const updates = req.body;
@@ -71,7 +70,7 @@ router.patch("/:id/profile", verify, async (req, res, next) => {
 router.delete("/:id/profile", verify, async (req, res, next) => {
   // we need to delete token from client to make sure not returning null values
   try {
-    if (req.params.id !== req.user._id)
+    if (req.params.id !== req.user._id || req.user.type !== "tailor")
       throw new Error("Youd don't have permission"); ////// Tailor can only delete himself or Admin
 
     const deletedTailor = await Tailor.findByIdAndDelete(req.user._id);

@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const Tailor = require("../models/Tailor");
+const Vendor = require("../models/Vendor");
 const {
   userLoginValidationSchema,
   userRegisterValidationSchema,
@@ -27,7 +28,7 @@ router.post("/register", async (req, res, next) => {
     } else if (userType === "user") {
       return creatNewUser(req, res, next, anyUserHashedPassword);
     } else if (userType === "vendor") {
-      res.json({ message: "hi from vendor" });
+      return creatNewVendor(req, res, next, anyUserHashedPassword);
     } else return next();
   } catch (err) {
     next(err);
@@ -44,8 +45,7 @@ router.post("/login", async (req, res, next) => {
 
     if (userType === "tailor") return tailorLogIn(req, res, next);
     else if (userType === "user") return userLogIn(req, res, next);
-    else if (userType === "vendor")
-      return res.json({ message: "hi from vendor" });
+    else if (userType === "vendor") return vendorLogIn(req, res, next)
     else return next();
   } catch (err) {
     next(err);
@@ -95,6 +95,28 @@ async function creatNewUser(req, res, next, anyUserHashedPassword) {
   }
 }
 
+async function creatNewVendor(req, res, next, anyUserHashedPassword){
+  const { username, email, location, phone, description, tailorType } =
+    req.body;
+  try {
+    const alreadyExist = await Vendor.findOne({ email: email }); // user already exists
+    if (alreadyExist) throw new Error("This Vendor already Exists");
+
+    const newVendor = new Vendor({
+      username: username,
+      password: anyUserHashedPassword,
+      email: email,
+      location: location,
+      phone: phone,
+      description: description,
+    });
+    const savedVendor = await newVendor.save();
+    res.json({ NewUser: savedVendor._id, username: username });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function tailorLogIn(req, res, next) {
   try {
     const foundTailor = await Tailor.findOne({ email: req.body.email });
@@ -121,6 +143,21 @@ async function userLogIn(req, res, next) {
     );
     if (!validPass) throw new Error("passowrd didn't match");
     createToken(res, foundUser._id, foundUser.username, req.body.type); // assign a token for each user
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function vendorLogIn(req, res, next) {
+  try {
+    const foundVendor= await Vendor.findOne({ email: req.body.email });
+    if (!foundVendor) throw new Error("Vendor email notttt found");
+    const validPass = await bcrypt.compare(
+      req.body.password,
+      foundVendor.password
+    );
+    if (!validPass) throw new Error("passowrd didn't match");
+    createToken(res, foundVendor._id, foundVendor.username, req.body.type); // assign a token for each user
   } catch (err) {
     next(err);
   }
