@@ -1,13 +1,18 @@
 const mongoose = require("mongoose");
 
-const itemSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
   category: {
-    type: Schema.Types.ObjectId,
+    // Ready made, Accessories, Cloth
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
+  },
+  subcategory: {
+    // shirt, pants, dress, ...etc
+    type: String,
   },
   gender: {
     type: String,
@@ -16,7 +21,7 @@ const itemSchema = new mongoose.Schema({
     type: String,
   },
   owner: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Vendor",
   },
   size: [
@@ -35,4 +40,4 @@ const itemSchema = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("Item", itemSchema);
+module.exports = mongoose.model("Product", productSchema);
