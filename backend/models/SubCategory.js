@@ -1,8 +1,12 @@
 const mongoose = require("mongoose");
 
 const subSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    unique: true,
+    required: true,
+  },
   category: {
-    // Ready made, Accessories, Cloth
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
   },

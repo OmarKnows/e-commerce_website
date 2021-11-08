@@ -5,14 +5,9 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  category: {
-    // Ready made, Accessories, Cloth
+  subCategory: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
-  },
-  subcategory: {
-    // shirt, pants, dress, ...etc
-    type: String,
+    ref: "SubCategory",
   },
   gender: {
     type: String,
