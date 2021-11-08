@@ -6,10 +6,15 @@ const subSchema = new mongoose.Schema({
     unique: true,
     required: true,
   },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
+  image: {
+    type: String,
   },
+  products: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
+  ],
 });
 
 module.exports = mongoose.model("SubCategory", subSchema);

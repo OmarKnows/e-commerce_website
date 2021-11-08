@@ -15,15 +15,17 @@ const auth = require("./routes/authentication");
 const tailors = require("./routes/tailor");
 const users = require("./routes/user");
 const vendors = require("./routes/vendor");
-const products = require("./routes/product");
 const categories = require("./routes/category");
+const subcategories = require("./routes/subcategory");
+const products = require("./routes/product");
 
 app.use("/auth", auth);
 app.use("/tailors", tailors);
 app.use("/users", users);
 app.use("/vendors", vendors);
-app.use("/products", products);
 app.use("/categories", categories);
+app.use("/categories/:catId/sub", subcategories);
+app.use("/categories/:catId/sub/:subId/products", products);
 
 //Error Handling
 app.use((req, res, next) => {
@@ -36,7 +38,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send({ error: err.message });
 });
 
-const port = process.env.PORT || 3000; //running server
+const port = process.env.PORT || 4000; //running server
 app.listen(port, () => {
   console.log("listining !!" + port);
 });

@@ -6,6 +6,15 @@ const CategorySchema = new mongoose.Schema({
     unique: true,
     required: true,
   },
+  image: {
+    type: String,
+  },
+  subcategory: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubCategory",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Category", CategorySchema);
