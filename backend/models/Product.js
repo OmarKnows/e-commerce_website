@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
     type: String,
   },
   owner: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId, // req.user._id
     ref: "Vendor",
   },
   size: [
