@@ -9,7 +9,6 @@ const vendorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   email: {
     type: String,
     required: true,
@@ -24,12 +23,6 @@ const vendorSchema = new mongoose.Schema({
   phone: {
     type: Number,
     required: true,
-  },
-  products: {
-    name: String,
-    products: [
-      //items model
-    ],
   },
 });
 
