@@ -28,4 +28,21 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+//delete category with related subcategories and products
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const Mongoose = require("mongoose");
+    const catId = Mongoose.Types.ObjectId(req.params.id);
+
+    const deleteCategory = await Category.findByIdAndRemove(catId);
+    if (!deleteCategory) throw new Error("Category Not Found");
+
+    deleteCategory.remove();
+
+    res.json(deleteCategory);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
