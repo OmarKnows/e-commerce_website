@@ -37,4 +37,25 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+//delete category with related subcategories and products
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const Mongoose = require("mongoose");
+    const subId = Mongoose.Types.ObjectId(req.params.id);
+    const deleteSubCategory = await SubCategory.findByIdAndRemove(subId);
+
+    if (!deleteSubCategory) throw new Error("SubCategory Not Found");
+
+    const Cat = await Category.findById(req.params.catId);
+    const indexOfRemovedSubCategory = Cat.subcategory.indexOf(subId); // delete refrence of subcat in Cat array
+    Cat.subcategory.splice(indexOfRemovedSubCategory, 1);
+    await Cat.save();
+
+    await deleteSubCategory.remove(); // calling remove hook to remove related documents
+
+    res.json(deleteSubCategory);
+  } catch (err) {
+    next(err);
+  }
+});
 module.exports = router;
