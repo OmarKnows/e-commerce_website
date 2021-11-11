@@ -37,7 +37,7 @@ router.delete("/:id", async (req, res, next) => {
     const deleteCategory = await Category.findByIdAndRemove(catId);
     if (!deleteCategory) throw new Error("Category Not Found");
 
-    deleteCategory.remove();
+    await deleteCategory.remove(); // calling remove hook to remove related documents
 
     res.json(deleteCategory);
   } catch (err) {

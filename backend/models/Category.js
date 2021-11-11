@@ -17,22 +17,22 @@ const CategorySchema = new mongoose.Schema({
   ],
 });
 
-// delete related subcategories
+// delete related subcategories & products
 CategorySchema.post("remove", async (doc) => {
   const SubCategory = require("./SubCategory");
   const Product = require("./Product");
 
   const subs = await SubCategory.find({ _id: { $in: doc.subcategory } });
-  console.log(subs);
-  console.log(subs.products);
-  subs.forEach(async (sub) => {
-    const deletedProduct = await Product.deleteMany({
-      _id: { $in: sub.products },
-    });
-    console.log(deletedProduct);
-  });
 
-  await SubCategory.deleteMany({ _id: { $in: doc.subcategory } });
+  // no need to check products if there is no sub categories
+  if (subs.length !== 0) {
+    // delete products in each sub category
+    subs.forEach(async (sub) => {
+      await Product.deleteMany({ _id: { $in: sub.products } });
+    });
+    // delete subcategories
+    await SubCategory.deleteMany({ _id: { $in: doc.subcategory } });
+  }
 });
 
 module.exports = mongoose.model("Category", CategorySchema);
