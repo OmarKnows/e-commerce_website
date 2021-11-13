@@ -37,7 +37,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-//delete category with related subcategories and products
+//delete subcategories and related products
 router.delete("/:id", async (req, res, next) => {
   try {
     const Mongoose = require("mongoose");

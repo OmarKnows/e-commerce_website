@@ -9,6 +9,7 @@ mongoose.connect(process.env.DB_CONNECT, () => console.log("Connected to DB")); 
 
 //middlewares
 app.use(express.json());
+//express.urlencoded({ extended: false });
 
 //routes middlewares
 const auth = require("./routes/authentication");

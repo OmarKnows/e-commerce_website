@@ -40,4 +40,25 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+//delete a product
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const Mongoose = require("mongoose");
+    const productId = Mongoose.Types.ObjectId(req.params.id);
+    const deleteProduct = await Product.findByIdAndRemove(productId);
+
+    if (!deleteProduct) throw new Error("Product Not Found");
+
+    const subCat = await SubCategory.findById(req.params.subId);
+    console.log(subCat);
+    const indexOfRemovedProduct = subCat.products.indexOf(productId); // delete refrence of products in subcat array
+    subCat.products.splice(indexOfRemovedProduct, 1);
+    await subCat.save();
+
+    res.json(deleteProduct);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
