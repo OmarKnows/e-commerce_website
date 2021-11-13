@@ -92,7 +92,6 @@ router.patch("/:id", async (req, res, next) => {
     const { itemName, price, colour, id } = req.body;
 
     const product = await Product.findById(req.params.id);
-    console.log(product);
 
     product.items.forEach((item) => {
       if (item._id == id) {
@@ -102,15 +101,18 @@ router.patch("/:id", async (req, res, next) => {
         if (price) item.price = price;
         //if the body has a colour we add it to colour array
         if (colour) {
+          let colorExist = false;
           item.colour.forEach((cl) => {
+            if (colorExist) return;
+
             //if the colour already exists we add 1 to quantity
-            if (cl.colourName === colour.colourName) {
-              return cl.quantity++;
-            } else {
-              // else we push that new colour
-              return item.colour.push(colour);
+            if (cl.colourName == colour.colourName) {
+              cl.quantity++;
+              colorExist = true;
             }
           });
+          // else we push that new colour
+          if (colorExist === false) item.colour.push(colour);
         }
       }
     });
