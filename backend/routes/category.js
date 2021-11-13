@@ -6,6 +6,8 @@ const verify = require("../controllers/verifyToken");
 router.post("/", async (req, res, next) => {
   try {
     const { name, image } = req.body;
+    const catAlreadyExist = await Category.findOne({ name: name });
+    if (catAlreadyExist) throw new Error("Category Already Exists");
 
     const newCategory = new Category({
       name: name,
@@ -22,7 +24,24 @@ router.post("/", async (req, res, next) => {
 router.get("/", async (req, res, next) => {
   try {
     const Categories = await Category.find();
-    res.json(Categories);
+    if (Categories.length === 0)
+      res.json({ message: "There Is No Categories Yet" });
+    else res.json(Categories);
+  } catch (err) {
+    next(err);
+  }
+});
+
+//update category
+router.patch("/:id", async (req, res, next) => {
+  try {
+    const Mongoose = require("mongoose");
+    const catId = Mongoose.Types.ObjectId(req.params.id);
+
+    const updatedCategory = await Category.findByIdAndUpdate(catId, req.body);
+    if (!updatedCategory) throw new Error("Category Not Found");
+
+    res.json(updatedCategory);
   } catch (err) {
     next(err);
   }

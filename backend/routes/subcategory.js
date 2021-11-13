@@ -10,6 +10,10 @@ router.post("/", async (req, res, next) => {
     if (!category) throw new Error("Category Not Found");
 
     const { name, image } = req.body;
+
+    const subAlreadyExist = await SubCategory.findOne({ name: name });
+    if (subAlreadyExist) throw new Error("Subcategory Already Exists");
+
     const newSub = new SubCategory({
       name: name,
       image: image,
@@ -25,13 +29,38 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+// get all subcategories
 router.get("/", async (req, res, next) => {
   try {
     const subs = await Category.findById(req.params.catId)
       .populate("subcategory")
-      .exec(); // get all subcategories
+      .exec();
 
-    res.json(subs.subcategory);
+    if (!subs) throw new Error("Category Not Found");
+
+    if (subs.subcategory.length === 0)
+      res.json({ message: "There Is No Subcategories Yet" });
+    else res.json(subs.subcategory);
+  } catch (err) {
+    next(err);
+  }
+});
+
+//update subcategory
+router.patch("/:id", async (req, res, next) => {
+  try {
+    // if the category isn't found
+    const category = await Category.findById(req.params.catId);
+    if (!category) throw new Error("Category Not Found");
+
+    const Mongoose = require("mongoose");
+    const subId = Mongoose.Types.ObjectId(req.params.id);
+
+    // if the subcategory isn't found
+    const updatedSub = await SubCategory.findByIdAndUpdate(subId, req.body);
+    if (!updatedSub) throw new Error("Subcategory Not Found");
+
+    res.json(updatedSub);
   } catch (err) {
     next(err);
   }
@@ -40,13 +69,15 @@ router.get("/", async (req, res, next) => {
 //delete subcategories and related products
 router.delete("/:id", async (req, res, next) => {
   try {
+    const Cat = await Category.findById(req.params.catId);
+    if (!Cat) throw new Error("Category Not Found");
+
     const Mongoose = require("mongoose");
     const subId = Mongoose.Types.ObjectId(req.params.id);
-    const deleteSubCategory = await SubCategory.findByIdAndRemove(subId);
 
+    const deleteSubCategory = await SubCategory.findByIdAndRemove(subId);
     if (!deleteSubCategory) throw new Error("SubCategory Not Found");
 
-    const Cat = await Category.findById(req.params.catId);
     const indexOfRemovedSubCategory = Cat.subcategory.indexOf(subId); // delete refrence of subcat in Cat array
     Cat.subcategory.splice(indexOfRemovedSubCategory, 1);
     await Cat.save();

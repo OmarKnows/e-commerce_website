@@ -15,10 +15,10 @@ const productSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Vendor",
   },
-  size: [
+  items: [
     // different sizes and each one could have different colours and prices
     {
-      sizeName: String,
+      itemName: String,
       price: Number,
       colour: [
         {
