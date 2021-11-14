@@ -89,34 +89,45 @@ router.get("/:id", async (req, res, next) => {
 //Update items  in a product
 router.patch("/:id", async (req, res, next) => {
   try {
-    const { itemName, price, colour, id } = req.body;
+    const { name, gender, description, items } = req.body;
 
+    /////////////////////// UPDATING THE PRODUCT INFO ////////////////////////
     const product = await Product.findById(req.params.id);
+    if (name) product.name = name;
+    if (gender) product.gender = gender;
+    if (description) product.description = description;
+    /////////////////////////////////////////////////////////////////////////
 
-    product.items.forEach((item) => {
-      if (item._id == id) {
-        //if the body has itemName so we update it
-        if (itemName) item.itemName = itemName;
-        //if the body has price so we update it
-        if (price) item.price = price;
-        //if the body has a colour we add it to colour array
-        if (colour) {
-          let colorExist = false;
-          item.colour.forEach((cl) => {
-            if (colorExist) return;
+    /////////////////// UPDATING THE ITEMS INSIDE THE PRODUCT /////////////
+    if (items) {
+      product.items.forEach((item) => {
+        if (item._id == items.id) {
+          //if the body has itemName so we update it
+          if (items.itemName) item.itemName = items.itemName;
+          //if the body has price so we update it
+          if (items.price) item.price = items.price;
+          //if the body has a colour we add it to colour array
+          if (items.colour) {
+            let colorExist = false;
+            item.colour.forEach((cl) => {
+              if (colorExist) return;
 
-            //if the colour already exists we add 1 to quantity
-            if (cl.colourName == colour.colourName) {
-              cl.quantity++;
-              colorExist = true;
+              //if the colour already exists we add 1 to quantity
+              if (cl.colourName == items.colour.colourName) {
+                cl.quantity++;
+                colorExist = true;
+              }
+            });
+            // else we push that new colour
+            if (colorExist === false) {
+              if (!items.colour.quantity) items.colour.quantity = 1;
+              item.colour.push(items.colour);
             }
-          });
-          // else we push that new colour
-          if (colorExist === false) item.colour.push(colour);
+          }
         }
-      }
-    });
-
+      });
+    }
+    /////////////////////////////////////////////////////////////////////////
     await product.save();
     res.json(product.items);
   } catch (err) {
@@ -149,5 +160,7 @@ router.delete("/:id", async (req, res, next) => {
 });
 
 // update product itself
+// delete item from array
+// decrease color quantity
 
 module.exports = router;
