@@ -11,9 +11,11 @@ const productSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  owner: {
+  vendorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Vendor",
+  },
+  vendorName: {
+    type: String,
   },
   items: [
     // different sizes and each one could have different colours and prices

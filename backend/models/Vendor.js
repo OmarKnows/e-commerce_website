@@ -24,6 +24,12 @@ const vendorSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  products: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Vendor", vendorSchema);

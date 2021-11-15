@@ -3,27 +3,37 @@ const Product = require("../models/Product");
 const verify = require("../controllers/verifyToken");
 const SubCategory = require("../models/SubCategory");
 const Category = require("../models/Category");
+const Vendor = require("../models/Vendor");
 
 //Add New Product
-router.post("/", async (req, res, next) => {
+router.post("/", verify, async (req, res, next) => {
   try {
+    if (req.user.type !== "vendor")
+      return next(new Error("Please sign up as a vendor"));
+
     const category = await Category.findById(req.params.catId);
     if (!category) throw new Error("Category Is Not Found");
 
     const subcategory = await SubCategory.findById(req.params.subId);
     if (!subcategory) throw new Error("SubCategory Is Not Found");
 
-    const { name, gender, descripton, owner, items } = req.body;
+    const { name, gender, descripton, items } = req.body;
 
     const newProduct = new Product({
       name: name,
       gender: gender,
       descripton: descripton,
-      owner: owner,
       items: items,
+      vendorId: req.user._id,
+      vendorName: req.user.username,
     });
     const savedProduct = await newProduct.save();
     subcategory.products.push(savedProduct);
+
+    const vendor = await Vendor.findById(req.user._id);
+    vendor.products.push(savedProduct);
+
+    await vendor.save();
     await subcategory.save();
 
     res.json(savedProduct);
@@ -33,7 +43,7 @@ router.post("/", async (req, res, next) => {
 });
 
 //Get all products in a subcategory
-router.get("/", async (req, res, next) => {
+router.get("/", verify, async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.catId);
     if (!category) throw new Error("Category Is Not Found");
@@ -51,16 +61,24 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+/// => verify that this product is for that vendor
 //Add New Item in a Product
-router.post("/:id", async (req, res, next) => {
+router.post("/:id", verify, async (req, res, next) => {
   try {
+    if (req.user.type !== "vendor")
+      return next(new Error("Please sign up as a vendor"));
+
+    const product = await Product.findById(req.params.id);
+
+    if (req.user._id != product.vendorId)
+      return next(new Error("You don't have permission"));
+
     const category = await Category.findById(req.params.catId);
     if (!category) throw new Error("Category Is Not Found");
 
     const subcategory = await SubCategory.findById(req.params.subId);
     if (!subcategory) throw new Error("SubCategory Is Not Found");
 
-    const product = await Product.findById(req.params.id);
     product.items.push(req.body);
     await product.save();
 
@@ -71,7 +89,7 @@ router.post("/:id", async (req, res, next) => {
 });
 
 //Get items  in a product
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", verify, async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.catId);
     if (!category) throw new Error("Category Is Not Found");
@@ -87,12 +105,18 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //Update items  in a product
-router.patch("/:id", async (req, res, next) => {
+router.patch("/:id", verify, async (req, res, next) => {
   try {
     const { name, gender, description, items } = req.body;
 
-    /////////////////////// UPDATING THE PRODUCT INFO ////////////////////////
+    if (req.user.type !== "vendor")
+      return next(new Error("Please sign up as a vendor"));
+
     const product = await Product.findById(req.params.id);
+    if (req.user._id != product.vendorId)
+      return next(new Error("You don't have permission"));
+
+    /////////////////////// UPDATING THE PRODUCT INFO ////////////////////////
     if (name) product.name = name;
     if (gender) product.gender = gender;
     if (description) product.description = description;
@@ -136,13 +160,21 @@ router.patch("/:id", async (req, res, next) => {
 });
 
 //delete a product
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", verify, async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.catId);
     if (!category) throw new Error("Category Is Not Found");
 
     const subCat = await SubCategory.findById(req.params.subId);
     if (!subCat) throw new Error("Subcategory Is Not Found");
+
+    if (req.user.type !== "vendor")
+      return next(new Error("Please sign up as a vendor"));
+
+    const product = await Product.findById(req.params.id);
+
+    if (req.user._id != product.vendorId)
+      return next(new Error("You don't have permission"));
 
     const Mongoose = require("mongoose");
     const productId = Mongoose.Types.ObjectId(req.params.id);
@@ -159,8 +191,6 @@ router.delete("/:id", async (req, res, next) => {
   }
 });
 
-// update product itself
-// delete item from array
-// decrease color quantity
+// delete item || color from array => ??? kol wa7ed fehom leeh id hal a3ml l kol wa7ed fehom route?
 
 module.exports = router;
