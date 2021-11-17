@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const Category = require("../models/Category");
-const verify = require("../controllers/verifyToken");
+const { verifyToken } = require("../controllers/verification");
 
 //Add New Category
 router.post("/", async (req, res, next) => {

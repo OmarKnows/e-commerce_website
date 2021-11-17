@@ -1,16 +1,13 @@
 const router = require("express").Router({ mergeParams: true });
 const Product = require("../models/Product");
-const verify = require("../controllers/verifyToken");
+const { verifyToken, verifyVendor } = require("../controllers/verification");
 const SubCategory = require("../models/SubCategory");
 const Category = require("../models/Category");
 const Vendor = require("../models/Vendor");
 
 //Add New Product
-router.post("/", verify, async (req, res, next) => {
+router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
   try {
-    if (req.user.type !== "vendor")
-      return next(new Error("Please sign up as a vendor"));
-
     const category = await Category.findById(req.params.catId);
     if (!category) throw new Error("Category Is Not Found");
 
@@ -43,7 +40,7 @@ router.post("/", verify, async (req, res, next) => {
 });
 
 //Get all products in a subcategory
-router.get("/", verify, async (req, res, next) => {
+router.get("/", verifyToken, async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.catId);
     if (!category) throw new Error("Category Is Not Found");
@@ -63,11 +60,8 @@ router.get("/", verify, async (req, res, next) => {
 
 /// => verify that this product is for that vendor
 //Add New Item in a Product
-router.post("/:id", verify, async (req, res, next) => {
+router.post("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
-    if (req.user.type !== "vendor")
-      return next(new Error("Please sign up as a vendor"));
-
     const product = await Product.findById(req.params.id);
 
     if (req.user._id != product.vendorId)
@@ -89,7 +83,7 @@ router.post("/:id", verify, async (req, res, next) => {
 });
 
 //Get items  in a product
-router.get("/:id", verify, async (req, res, next) => {
+router.get("/:id", verifyToken, async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.catId);
     if (!category) throw new Error("Category Is Not Found");
@@ -105,12 +99,9 @@ router.get("/:id", verify, async (req, res, next) => {
 });
 
 //Update items  in a product
-router.patch("/:id", verify, async (req, res, next) => {
+router.patch("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
     const { name, gender, description, items } = req.body;
-
-    if (req.user.type !== "vendor")
-      return next(new Error("Please sign up as a vendor"));
 
     const product = await Product.findById(req.params.id);
     if (req.user._id != product.vendorId)
@@ -160,16 +151,13 @@ router.patch("/:id", verify, async (req, res, next) => {
 });
 
 //delete a product
-router.delete("/:id", verify, async (req, res, next) => {
+router.delete("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.catId);
     if (!category) throw new Error("Category Is Not Found");
 
     const subCat = await SubCategory.findById(req.params.subId);
     if (!subCat) throw new Error("Subcategory Is Not Found");
-
-    if (req.user.type !== "vendor")
-      return next(new Error("Please sign up as a vendor"));
 
     const product = await Product.findById(req.params.id);
 
@@ -192,5 +180,6 @@ router.delete("/:id", verify, async (req, res, next) => {
 });
 
 // delete item || color from array => ??? kol wa7ed fehom leeh id hal a3ml l kol wa7ed fehom route?
+// refactoring
 
 module.exports = router;

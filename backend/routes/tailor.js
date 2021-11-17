@@ -1,10 +1,10 @@
 const router = require("express").Router();
 const Tailor = require("../models/Tailor");
-const verify = require("../controllers/verifyToken");
+const { verifyToken } = require("../controllers/verification");
 const { userUpdateValidationSchema } = require("../controllers/joiValidation");
 
 //get all tailors
-router.get("/", verify, async (req, res, next) => {
+router.get("/", verifyToken, async (req, res, next) => {
   try {
     ///////////////////////// This function enables the tailor to see other tailors except himself /////////
     if (req.user.type === "tailor") {
@@ -24,7 +24,7 @@ router.get("/", verify, async (req, res, next) => {
 });
 
 //get only one tailor to be accessed from any other users
-router.get("/:id", verify, async (req, res, next) => {
+router.get("/:id", verifyToken, async (req, res, next) => {
   try {
     const getOneTailor = await Tailor.findById(req.params.id);
     res.json(getOneTailor);
@@ -34,7 +34,7 @@ router.get("/:id", verify, async (req, res, next) => {
 });
 
 //Tailor Profile only accessed by himself or Admin
-router.get("/:id/profile", verify, async (req, res, next) => {
+router.get("/:id/profile", verifyToken, async (req, res, next) => {
   try {
     if (req.params.id !== req.user._id || req.user.type !== "tailor")
       throw new Error("Youd don't have permission");
@@ -46,11 +46,9 @@ router.get("/:id/profile", verify, async (req, res, next) => {
 });
 
 // update tailor info only accessed by himself or Admin
-router.patch("/:id/profile", verify, async (req, res, next) => {
+router.patch("/:id/profile", verifyToken, async (req, res, next) => {
   // validation for the info to be updated
-  const { error } = userUpdateValidationSchema(
-    req.body
-  );
+  const { error } = userUpdateValidationSchema(req.body);
   if (error) return next(error.details[0]);
 
   try {
@@ -67,7 +65,7 @@ router.patch("/:id/profile", verify, async (req, res, next) => {
 });
 
 // delete tailor only accessed by himself or Admin
-router.delete("/:id/profile", verify, async (req, res, next) => {
+router.delete("/:id/profile", verifyToken, async (req, res, next) => {
   // we need to delete token from client to make sure not returning null values
   try {
     if (req.params.id !== req.user._id || req.user.type !== "tailor")

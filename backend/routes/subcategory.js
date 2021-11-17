@@ -1,5 +1,5 @@
 const router = require("express").Router({ mergeParams: true });
-const verify = require("../controllers/verifyToken");
+const { verifyToken } = require("../controllers/verification");
 const Category = require("../models/Category");
 const SubCategory = require("../models/SubCategory");
 

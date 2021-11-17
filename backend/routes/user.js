@@ -1,10 +1,10 @@
 const router = require("express").Router();
 const User = require("../models/User");
-const verify = require("../controllers/verifyToken");
+const { verifyToken } = require("../controllers/verification");
 const { userUpdateValidationSchema } = require("../controllers/joiValidation");
 
 //User Profile only accessed by himself or Admin
-router.get("/:id/profile", verify, async (req, res, next) => {
+router.get("/:id/profile", verifyToken, async (req, res, next) => {
   try {
     if (req.params.id !== req.user._id || req.user.type !== "user")
       throw new Error("Youd don't have permission");
@@ -16,11 +16,9 @@ router.get("/:id/profile", verify, async (req, res, next) => {
 });
 
 // update user info only accessed by himself or Admin
-router.patch("/:id/profile", verify, async (req, res, next) => {
+router.patch("/:id/profile", verifyToken, async (req, res, next) => {
   // validation for the info to be updated
-  const { error } = userUpdateValidationSchema(
-    req.body
-  );
+  const { error } = userUpdateValidationSchema(req.body);
   if (error) return next(error.details[0]);
 
   try {
@@ -37,7 +35,7 @@ router.patch("/:id/profile", verify, async (req, res, next) => {
 });
 
 // delete user only accessed by himself or Admin
-router.delete("/:id/profile", verify, async (req, res, next) => {
+router.delete("/:id/profile", verifyToken, async (req, res, next) => {
   // we need to delete token from client to make sure not returning null values
   try {
     if (req.params.id !== req.user._id || req.user.type !== "user")
