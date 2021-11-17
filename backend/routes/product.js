@@ -8,11 +8,8 @@ const Vendor = require("../models/Vendor");
 //Add New Product
 router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
   try {
-    const category = await Category.findById(req.params.catId);
-    if (!category) throw new Error("Category Is Not Found");
-
-    const subcategory = await SubCategory.findById(req.params.subId);
-    if (!subcategory) throw new Error("SubCategory Is Not Found");
+    //check if category and subcategory exist
+    isCategoryAndSubFound(req);
 
     const { name, gender, descripton, items } = req.body;
 
@@ -42,14 +39,13 @@ router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
 //Get all products in a subcategory
 router.get("/", verifyToken, async (req, res, next) => {
   try {
-    const category = await Category.findById(req.params.catId);
-    if (!category) throw new Error("Category Is Not Found");
+    //check if category and subcategory exist
+    isCategoryAndSubFound(req);
 
     const subcategory = await SubCategory.findById(req.params.subId)
       .populate("products")
       .exec();
 
-    if (!subcategory) throw new Error("SubCategory Is Not Found");
     if (subcategory.products.length === 0)
       res.json({ message: "There Is No Products Yet" });
     else res.json(subcategory.products);
@@ -58,20 +54,16 @@ router.get("/", verifyToken, async (req, res, next) => {
   }
 });
 
-/// => verify that this product is for that vendor
 //Add New Item in a Product
 router.post("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
+    //check if category and subcategory exist
+    isCategoryAndSubFound(req);
+
     const product = await Product.findById(req.params.id);
 
     if (req.user._id != product.vendorId)
       return next(new Error("You don't have permission"));
-
-    const category = await Category.findById(req.params.catId);
-    if (!category) throw new Error("Category Is Not Found");
-
-    const subcategory = await SubCategory.findById(req.params.subId);
-    if (!subcategory) throw new Error("SubCategory Is Not Found");
 
     product.items.push(req.body);
     await product.save();
@@ -85,11 +77,8 @@ router.post("/:id", verifyToken, verifyVendor, async (req, res, next) => {
 //Get items  in a product
 router.get("/:id", verifyToken, async (req, res, next) => {
   try {
-    const category = await Category.findById(req.params.catId);
-    if (!category) throw new Error("Category Is Not Found");
-
-    const subcategory = await SubCategory.findById(req.params.subId);
-    if (!subcategory) throw new Error("SubCategory Is Not Found");
+    //check if category and subcategory exist
+    isCategoryAndSubFound(req);
 
     const product = await Product.findById(req.params.id);
     res.json(product.items);
@@ -101,6 +90,9 @@ router.get("/:id", verifyToken, async (req, res, next) => {
 //Update items  in a product
 router.patch("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
+    //check if category and subcategory exist
+    isCategoryAndSubFound(req);
+
     const { name, gender, description, items } = req.body;
 
     const product = await Product.findById(req.params.id);
@@ -153,11 +145,8 @@ router.patch("/:id", verifyToken, verifyVendor, async (req, res, next) => {
 //delete a product
 router.delete("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
-    const category = await Category.findById(req.params.catId);
-    if (!category) throw new Error("Category Is Not Found");
-
-    const subCat = await SubCategory.findById(req.params.subId);
-    if (!subCat) throw new Error("Subcategory Is Not Found");
+    //check if category and subcategory exist
+    isCategoryAndSubFound(req);
 
     const product = await Product.findById(req.params.id);
 
@@ -179,7 +168,14 @@ router.delete("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   }
 });
 
+function isCategoryAndSubFound(req) {
+  const category = await Category.findById(req.params.catId);
+  if (!category) throw new Error("Category Is Not Found");
+
+  const subcategory = await SubCategory.findById(req.params.subId);
+  if (!subcategory) throw new Error("SubCategory Is Not Found");
+}
+
 // delete item || color from array => ??? kol wa7ed fehom leeh id hal a3ml l kol wa7ed fehom route?
-// refactoring
 
 module.exports = router;
