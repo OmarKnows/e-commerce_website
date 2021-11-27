@@ -19,6 +19,7 @@ const vendors = require("./routes/vendor");
 const categories = require("./routes/category");
 const subcategories = require("./routes/subcategory");
 const products = require("./routes/product");
+const orders = require("./routes/order");
 
 app.use("/auth", auth);
 app.use("/tailors", tailors);
@@ -27,6 +28,7 @@ app.use("/vendors", vendors);
 app.use("/categories", categories);
 app.use("/categories/:catId/sub", subcategories);
 app.use("/categories/:catId/sub/:subId/products", products);
+app.use("/order", orders);
 
 //Error Handling
 app.use((req, res, next) => {

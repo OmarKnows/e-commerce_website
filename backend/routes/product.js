@@ -168,7 +168,7 @@ router.delete("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   }
 });
 
-function isCategoryAndSubFound(req) {
+async function isCategoryAndSubFound(req) {
   const category = await Category.findById(req.params.catId);
   if (!category) throw new Error("Category Is Not Found");
 
