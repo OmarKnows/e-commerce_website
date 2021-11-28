@@ -11,6 +11,8 @@ router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
     //check if category and subcategory exist
     isCategoryAndSubFound(req);
 
+    const subcategory = await SubCategory.findById(req.params.subId);
+
     const { name, gender, descripton, items } = req.body;
 
     const newProduct = new Product({
