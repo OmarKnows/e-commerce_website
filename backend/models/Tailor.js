@@ -4,14 +4,10 @@ const tailorSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    max: 255,
-    min: 6,
   },
   password: {
     type: String,
     required: true,
-    max: 1024,
-    min: 6,
   },
   email: {
     type: String,
@@ -27,6 +23,7 @@ const tailorSchema = new mongoose.Schema({
   phone: {
     type: Number,
     required: true,
+    unique: true,
   },
   location: {
     type: String,
