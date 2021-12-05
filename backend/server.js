@@ -12,22 +12,18 @@ app.use(express.json());
 //express.urlencoded({ extended: false });
 
 //routes middlewares
-const auth = require("./routes/authentication");
-const tailors = require("./routes/tailor");
-const users = require("./routes/user");
-const vendors = require("./routes/vendor");
-const categories = require("./routes/category");
-const subcategories = require("./routes/subcategory");
-const products = require("./routes/product");
-const orders = require("./routes/order");
+const auth = require("./src/entities/Authentication/authentication.router");
+const tailors = require("./src/entities/Tailor/tailor.router");
+const users = require("./src/entities/User/user.router");
+const vendors = require("./src/entities/Vendor/vendor.router");
+const products = require("./src/entities/Product/product.router");
+const orders = require("./src/entities/Order/order.router");
 
 app.use("/auth", auth);
 app.use("/tailors", tailors);
 app.use("/users", users);
 app.use("/vendors", vendors);
-app.use("/categories", categories);
-app.use("/categories/:catId/sub", subcategories);
-app.use("/categories/:catId/sub/:subId/products", products);
+app.use("/categories/subcategory/products", products);
 app.use("/order", orders);
 
 //Error Handling

@@ -1,7 +1,9 @@
 const router = require("express").Router();
-const Tailor = require("../models/Tailor");
-const { verifyToken } = require("../controllers/verification");
-const { userUpdateValidationSchema } = require("../controllers/joiValidation");
+const Tailor = require("../Tailor/Tailor.model");
+const { verifyToken } = require("../../../controllers/verification");
+const {
+  userUpdateValidationSchema,
+} = require("../../../controllers/joiValidation");
 
 //get all tailors
 router.get("/", verifyToken, async (req, res, next) => {

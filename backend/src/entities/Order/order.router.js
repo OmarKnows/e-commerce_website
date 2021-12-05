@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const Order = require("../models/Order");
-const { verifyToken } = require("../controllers/verification");
-const verifyCartItems = require("../controllers/orderHelperFunctions");
+const Order = require("../Order/Order.model");
+const { verifyToken } = require("../../../controllers/verification");
+const verifyCartItems = require("../../../controllers/orderHelperFunctions");
 
 router.post("/", verifyToken, async (req, res, next) => {
   try {

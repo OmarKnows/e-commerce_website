@@ -25,6 +25,7 @@ module.exports = async function verifyCartItems(orderLines) {
         for (let k = 0; k < product.items[j].colour.length; k++) {
           if (product.items[j].colour[k].colourName === orderLines[i].colour) {
             colourFlag = true;
+
             if (product.items[j].colour[k].quantity < orderLines[i].quantity) {
               {
                 throw new Error(
@@ -34,6 +35,7 @@ module.exports = async function verifyCartItems(orderLines) {
             } else {
               product.items[j].colour[k].quantity -= orderLines[i].quantity;
             }
+            break; // no need to continue when we find the colour
           }
         }
         if (!colourFlag) {
@@ -42,6 +44,7 @@ module.exports = async function verifyCartItems(orderLines) {
             `The colour ${orderLines[i].colour} of the size ${orderLines[i].size} of the product id -> ${orderLines[i].productId} doesn't exist`
           );
         }
+        break; // no need to continue when we find the size
       }
     }
     if (!sizeFlag) {

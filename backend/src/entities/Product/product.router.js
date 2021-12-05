@@ -1,9 +1,12 @@
 const router = require("express").Router({ mergeParams: true });
-const Product = require("../models/Product");
-const { verifyToken, verifyVendor } = require("../controllers/verification");
-const SubCategory = require("../models/SubCategory");
-const Category = require("../models/Category");
-const Vendor = require("../models/Vendor");
+const Product = require("../Product/Product.model");
+const {
+  verifyToken,
+  verifyVendor,
+} = require("../../../controllers/verification");
+const SubCategory = require("../../../models/SubCategory");
+const Category = require("../../../models/Category");
+const Vendor = require("../Vendor/Vendor.model");
 
 //Add New Product
 router.post("/", verifyToken, verifyVendor, async (req, res, next) => {

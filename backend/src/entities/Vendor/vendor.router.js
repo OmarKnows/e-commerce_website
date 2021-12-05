@@ -1,7 +1,9 @@
 const router = require("express").Router();
-const Vendor = require("../models/Vendor");
-const { verifyToken } = require("../controllers/verification");
-const { userUpdateValidationSchema } = require("../controllers/joiValidation");
+const Vendor = require("../Vendor/Vendor.model");
+const { verifyToken } = require("../../../controllers/verification");
+const {
+  userUpdateValidationSchema,
+} = require("../../../controllers/joiValidation");
 
 //get only one vendor to be accessed from any other users
 router.get("/:id", verifyToken, async (req, res, next) => {
