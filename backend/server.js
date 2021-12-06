@@ -23,7 +23,7 @@ app.use("/auth", auth);
 app.use("/tailors", tailors);
 app.use("/users", users);
 app.use("/vendors", vendors);
-app.use("/categories/subcategory/products", products);
+app.use("/products", products);
 app.use("/order", orders);
 
 //Error Handling

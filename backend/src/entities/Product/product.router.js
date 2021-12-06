@@ -4,36 +4,24 @@ const {
   verifyToken,
   verifyVendor,
 } = require("../../../controllers/verification");
-const SubCategory = require("../../../models/SubCategory");
-const Category = require("../../../models/Category");
-const Vendor = require("../Vendor/Vendor.model");
 
 //Add New Product
 router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
   try {
-    //check if category and subcategory exist
-    isCategoryAndSubFound(req);
-
-    const subcategory = await SubCategory.findById(req.params.subId);
-
-    const { name, gender, descripton, items } = req.body;
+    const { name, gender, category, subcategory, gender, descripton, items } =
+      req.body;
 
     const newProduct = new Product({
-      name: name,
-      gender: gender,
-      descripton: descripton,
-      items: items,
+      name,
+      gender,
+      category,
+      subcategory,
+      descripton,
+      items,
       vendorId: req.user._id,
       vendorName: req.user.username,
     });
     const savedProduct = await newProduct.save();
-    subcategory.products.push(savedProduct);
-
-    const vendor = await Vendor.findById(req.user._id);
-    vendor.products.push(savedProduct);
-
-    await vendor.save();
-    await subcategory.save();
 
     res.json(savedProduct);
   } catch (err) {
@@ -41,19 +29,50 @@ router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
   }
 });
 
-//Get all products in a subcategory
+//Get all products
 router.get("/", verifyToken, async (req, res, next) => {
   try {
-    //check if category and subcategory exist
-    isCategoryAndSubFound(req);
+    const products = await Product.find();
+    if (!products) throw new Error("There is no products found");
+    else res.json(products);
+  } catch (err) {
+    next(err);
+  }
+});
 
-    const subcategory = await SubCategory.findById(req.params.subId)
-      .populate("products")
-      .exec();
+//Get one product
+router.get("/:id", verifyToken, async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) throw new Error("There is no product found");
+    else res.json(product);
+  } catch (err) {
+    next(err);
+  }
+});
 
-    if (subcategory.products.length === 0)
-      res.json({ message: "There Is No Products Yet" });
-    else res.json(subcategory.products);
+//Get all products in a specific category
+router.get("/:category", verifyToken, async (req, res, next) => {
+  try {
+    const products = await Product.find({
+      category: req.params.category,
+    });
+    if (!products) throw new Error("There is no product found");
+    else res.json(products);
+  } catch (err) {
+    next(err);
+  }
+});
+
+//Get all products in a specific category & subcategory
+router.get("/:category/:subcategory", verifyToken, async (req, res, next) => {
+  try {
+    const products = await Product.find({
+      category: req.params.category,
+      subcategory: req.params.subcategory,
+    });
+    if (!products) throw new Error("There is no product found");
+    else res.json(products);
   } catch (err) {
     next(err);
   }
@@ -62,9 +81,6 @@ router.get("/", verifyToken, async (req, res, next) => {
 //Add New Item in a Product
 router.post("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
-    //check if category and subcategory exist
-    isCategoryAndSubFound(req);
-
     const product = await Product.findById(req.params.id);
 
     if (req.user._id != product.vendorId)
@@ -79,25 +95,9 @@ router.post("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   }
 });
 
-//Get items  in a product
-router.get("/:id", verifyToken, async (req, res, next) => {
-  try {
-    //check if category and subcategory exist
-    isCategoryAndSubFound(req);
-
-    const product = await Product.findById(req.params.id);
-    res.json(product.items);
-  } catch (err) {
-    next(err);
-  }
-});
-
 //Update items  in a product
-router.patch("/:id", verifyToken, verifyVendor, async (req, res, next) => {
+router.put("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
-    //check if category and subcategory exist
-    isCategoryAndSubFound(req);
-
     const { name, gender, description, items } = req.body;
 
     const product = await Product.findById(req.params.id);
@@ -150,9 +150,6 @@ router.patch("/:id", verifyToken, verifyVendor, async (req, res, next) => {
 //delete a product
 router.delete("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
-    //check if category and subcategory exist
-    isCategoryAndSubFound(req);
-
     const product = await Product.findById(req.params.id);
 
     if (req.user._id != product.vendorId)
@@ -163,24 +160,10 @@ router.delete("/:id", verifyToken, verifyVendor, async (req, res, next) => {
     const deleteProduct = await Product.findByIdAndRemove(productId);
     if (!deleteProduct) throw new Error("Product Is Not Found");
 
-    const indexOfRemovedProduct = subCat.products.indexOf(productId); // delete refrence of products in subcat array
-    subCat.products.splice(indexOfRemovedProduct, 1);
-    await subCat.save();
-
     res.json(deleteProduct);
   } catch (err) {
     next(err);
   }
 });
-
-async function isCategoryAndSubFound(req) {
-  const category = await Category.findById(req.params.catId);
-  if (!category) throw new Error("Category Is Not Found");
-
-  const subcategory = await SubCategory.findById(req.params.subId);
-  if (!subcategory) throw new Error("SubCategory Is Not Found");
-}
-
-// delete item || color from array => ??? kol wa7ed fehom leeh id hal a3ml l kol wa7ed fehom route?
 
 module.exports = router;
