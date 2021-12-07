@@ -15,20 +15,8 @@ router.get("/:id", verifyToken, async (req, res, next) => {
   }
 });
 
-//vendor Profile only accessed by himself or Admin
-router.get("/:id/profile", verifyToken, async (req, res, next) => {
-  try {
-    if (req.params.id !== req.user._id || req.user.type !== "vendor")
-      throw new Error("Youd don't have permission");
-    const getVendorProfile = await Vendor.findById(req.user._id);
-    res.json(getVendorProfile);
-  } catch (err) {
-    next(err);
-  }
-});
-
 // update Vendor info only accessed by himself or Admin
-router.patch("/:id/profile", verifyToken, async (req, res, next) => {
+router.put("/:id", verifyToken, async (req, res, next) => {
   // validation for the info to be updated
   const { error } = userUpdateValidationSchema(req.body);
   if (error) return next(error.details[0]);
@@ -47,7 +35,7 @@ router.patch("/:id/profile", verifyToken, async (req, res, next) => {
 });
 
 // delete Vendor only accessed by himself or Admin
-router.delete("/:id/profile", verifyToken, async (req, res, next) => {
+router.delete("/:id", verifyToken, async (req, res, next) => {
   // we need to delete token from client to make sure not returning null values
   try {
     if (req.params.id !== req.user._id || req.user.type !== "vendor")

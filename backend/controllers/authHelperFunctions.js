@@ -1,6 +1,6 @@
-const User = require("../models/User");
-const Tailor = require("../models/Tailor");
-const Vendor = require("../models/Vendor");
+const User = require("../src/entities/User/User.model");
+const Tailor = require("../src/entities/Tailor/Tailor.model");
+const Vendor = require("../src/entities/Vendor/Vendor.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 

@@ -1,4 +1,4 @@
-const Product = require("../models/Product");
+const Product = require("../src/entities/Product/Product.model");
 
 module.exports = async function verifyCartItems(orderLines) {
   // After looping throgh each product in the cart we want to make sure that

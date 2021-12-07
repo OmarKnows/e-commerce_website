@@ -14,18 +14,3 @@ const OrderSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Order", OrderSchema);
-
-/* 
-const OrderSchema = new mongoose.Schema({
-  ownerId: { type: Schema.Types.ObjectId },
-  products: [
-    {
-      productID: { type: Schema.Types.ObjectId, ref: "Product" },
-      quantity: Number,
-      price: Number,
-    },
-  ],
-});
-
-
-*/

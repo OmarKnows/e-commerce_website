@@ -25,12 +25,6 @@ const vendorSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  products: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-    },
-  ],
 });
 
 module.exports = mongoose.model("Vendor", vendorSchema);

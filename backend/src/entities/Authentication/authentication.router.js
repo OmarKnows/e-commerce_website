@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const {
   userLoginValidationSchema,
   userRegisterValidationSchema,
-} = require("../controllers/joiValidation");
+} = require("../../../controllers/joiValidation");
 
 const {
   creatNewTailor,
@@ -11,8 +11,8 @@ const {
   creatNewVendor,
   tailorLogIn,
   userLogIn,
-  vendorLogIn
-} = require("../controllers/authHelperFunctions") // importing auth controllers
+  vendorLogIn,
+} = require("../../../controllers/authHelperFunctions"); // importing auth controllers
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -50,7 +50,7 @@ router.post("/login", async (req, res, next) => {
 
     if (userType === "tailor") return tailorLogIn(req, res, next);
     else if (userType === "user") return userLogIn(req, res, next);
-    else if (userType === "vendor") return vendorLogIn(req, res, next)
+    else if (userType === "vendor") return vendorLogIn(req, res, next);
     else return next();
   } catch (err) {
     next(err);

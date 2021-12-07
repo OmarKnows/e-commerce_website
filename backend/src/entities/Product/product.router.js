@@ -1,5 +1,5 @@
 const router = require("express").Router({ mergeParams: true });
-const Product = require("../Product/Product.model");
+const Product = require("./Product.model");
 const {
   verifyToken,
   verifyVendor,
@@ -8,7 +8,7 @@ const {
 //Add New Product
 router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
   try {
-    const { name, gender, category, subcategory, gender, descripton, items } =
+    const { name, category, subcategory, gender, description, items } =
       req.body;
 
     const newProduct = new Product({
@@ -16,7 +16,7 @@ router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
       gender,
       category,
       subcategory,
-      descripton,
+      description,
       items,
       vendorId: req.user._id,
       vendorName: req.user.username,
@@ -33,7 +33,34 @@ router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
 router.get("/", verifyToken, async (req, res, next) => {
   try {
     const products = await Product.find();
-    if (!products) throw new Error("There is no products found");
+    if (products.length === 0) throw new Error("There is no products found");
+    else res.json(products);
+  } catch (err) {
+    next(err);
+  }
+});
+
+//Get all products in a specific category
+router.get("/:category", verifyToken, async (req, res, next) => {
+  try {
+    const products = await Product.find({
+      category: req.params.category,
+    });
+    if (products.length === 0) next();
+    else res.json(products);
+  } catch (err) {
+    next(err);
+  }
+});
+
+//Get all products in a specific category & subcategory
+router.get("/:category/:subcategory", verifyToken, async (req, res, next) => {
+  try {
+    const products = await Product.find({
+      category: req.params.category,
+      subcategory: req.params.subcategory,
+    });
+    if (products.length === 0) next();
     else res.json(products);
   } catch (err) {
     next(err);
@@ -51,33 +78,6 @@ router.get("/:id", verifyToken, async (req, res, next) => {
   }
 });
 
-//Get all products in a specific category
-router.get("/:category", verifyToken, async (req, res, next) => {
-  try {
-    const products = await Product.find({
-      category: req.params.category,
-    });
-    if (!products) throw new Error("There is no product found");
-    else res.json(products);
-  } catch (err) {
-    next(err);
-  }
-});
-
-//Get all products in a specific category & subcategory
-router.get("/:category/:subcategory", verifyToken, async (req, res, next) => {
-  try {
-    const products = await Product.find({
-      category: req.params.category,
-      subcategory: req.params.subcategory,
-    });
-    if (!products) throw new Error("There is no product found");
-    else res.json(products);
-  } catch (err) {
-    next(err);
-  }
-});
-
 //Add New Item in a Product
 router.post("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
@@ -85,6 +85,8 @@ router.post("/:id", verifyToken, verifyVendor, async (req, res, next) => {
 
     if (req.user._id != product.vendorId)
       return next(new Error("You don't have permission"));
+
+    /// the item already exists please go to update tab if u want to change
 
     product.items.push(req.body);
     await product.save();
@@ -113,9 +115,7 @@ router.put("/:id", verifyToken, verifyVendor, async (req, res, next) => {
     /////////////////// UPDATING THE ITEMS INSIDE THE PRODUCT /////////////
     if (items) {
       product.items.forEach((item) => {
-        if (item._id == items.id) {
-          //if the body has itemName so we update it
-          if (items.itemName) item.itemName = items.itemName;
+        if (item.itemName === items.itemName) {
           //if the body has price so we update it
           if (items.price) item.price = items.price;
           //if the body has a colour we add it to colour array
@@ -123,9 +123,8 @@ router.put("/:id", verifyToken, verifyVendor, async (req, res, next) => {
             let colorExist = false;
             item.colour.forEach((cl) => {
               if (colorExist) return;
-
               //if the colour already exists we add 1 to quantity
-              if (cl.colourName == items.colour.colourName) {
+              if (cl.colourName === items.colour.colourName) {
                 cl.quantity++;
                 colorExist = true;
               }
@@ -151,14 +150,13 @@ router.put("/:id", verifyToken, verifyVendor, async (req, res, next) => {
 router.delete("/:id", verifyToken, verifyVendor, async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
-
+    if (!product) throw new Error("Product Is Not Found");
     if (req.user._id != product.vendorId)
       return next(new Error("You don't have permission"));
 
     const Mongoose = require("mongoose");
     const productId = Mongoose.Types.ObjectId(req.params.id);
     const deleteProduct = await Product.findByIdAndRemove(productId);
-    if (!deleteProduct) throw new Error("Product Is Not Found");
 
     res.json(deleteProduct);
   } catch (err) {
