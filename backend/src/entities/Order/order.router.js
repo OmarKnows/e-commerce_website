@@ -1,9 +1,8 @@
 const router = require("express").Router();
 const Order = require("../Order/Order.model");
-const { verifyToken } = require("../../../controllers/verification");
 const verifyCartItems = require("../../../controllers/orderHelperFunctions");
 
-router.post("/", verifyToken, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     //place order (only tailor and user can place orders)
     if (req.user.type === "vendor")

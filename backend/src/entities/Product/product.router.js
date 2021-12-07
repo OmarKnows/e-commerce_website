@@ -6,7 +6,7 @@ const {
 } = require("../../../controllers/verification");
 
 //Add New Product
-router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
+router.post("/", verifyVendor, async (req, res, next) => {
   try {
     const { name, category, subcategory, gender, description, items } =
       req.body;
@@ -30,7 +30,7 @@ router.post("/", verifyToken, verifyVendor, async (req, res, next) => {
 });
 
 //Get all products
-router.get("/", verifyToken, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const products = await Product.find();
     if (products.length === 0) throw new Error("There is no products found");
@@ -41,7 +41,7 @@ router.get("/", verifyToken, async (req, res, next) => {
 });
 
 //Get all products in a specific category
-router.get("/:category", verifyToken, async (req, res, next) => {
+router.get("/:category", async (req, res, next) => {
   try {
     const products = await Product.find({
       category: req.params.category,
@@ -54,7 +54,7 @@ router.get("/:category", verifyToken, async (req, res, next) => {
 });
 
 //Get all products in a specific category & subcategory
-router.get("/:category/:subcategory", verifyToken, async (req, res, next) => {
+router.get("/:category/:subcategory", async (req, res, next) => {
   try {
     const products = await Product.find({
       category: req.params.category,
@@ -68,7 +68,7 @@ router.get("/:category/:subcategory", verifyToken, async (req, res, next) => {
 });
 
 //Get one product
-router.get("/:id", verifyToken, async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) throw new Error("There is no product found");
@@ -79,7 +79,7 @@ router.get("/:id", verifyToken, async (req, res, next) => {
 });
 
 //Add New Item in a Product
-router.post("/:id", verifyToken, verifyVendor, async (req, res, next) => {
+router.post("/:id", verifyVendor, async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
 
@@ -98,7 +98,7 @@ router.post("/:id", verifyToken, verifyVendor, async (req, res, next) => {
 });
 
 //Update items  in a product
-router.put("/:id", verifyToken, verifyVendor, async (req, res, next) => {
+router.put("/:id", verifyVendor, async (req, res, next) => {
   try {
     const { name, gender, description, items } = req.body;
 
@@ -147,7 +147,7 @@ router.put("/:id", verifyToken, verifyVendor, async (req, res, next) => {
 });
 
 //delete a product
-router.delete("/:id", verifyToken, verifyVendor, async (req, res, next) => {
+router.delete("/:id", verifyVendor, async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) throw new Error("Product Is Not Found");

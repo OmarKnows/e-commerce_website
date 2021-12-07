@@ -13,6 +13,7 @@ app.use(express.json());
 
 //routes middlewares
 const auth = require("./src/entities/Authentication/authentication.router");
+const { verifyToken } = require("./controllers/verification");
 const tailors = require("./src/entities/Tailor/tailor.router");
 const users = require("./src/entities/User/user.router");
 const vendors = require("./src/entities/Vendor/vendor.router");
@@ -20,6 +21,7 @@ const products = require("./src/entities/Product/product.router");
 const orders = require("./src/entities/Order/order.router");
 
 app.use("/auth", auth);
+app.use(verifyToken);
 app.use("/tailors", tailors);
 app.use("/users", users);
 app.use("/vendors", vendors);

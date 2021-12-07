@@ -6,7 +6,7 @@ const {
 } = require("../../../controllers/joiValidation");
 
 //get only one vendor to be accessed from any other users
-router.get("/:id", verifyToken, async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const getOneVendor = await Vendor.findById(req.params.id);
     res.json(getOneVendor);
@@ -16,7 +16,7 @@ router.get("/:id", verifyToken, async (req, res, next) => {
 });
 
 // update Vendor info only accessed by himself or Admin
-router.put("/:id", verifyToken, async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   // validation for the info to be updated
   const { error } = userUpdateValidationSchema(req.body);
   if (error) return next(error.details[0]);
@@ -35,7 +35,7 @@ router.put("/:id", verifyToken, async (req, res, next) => {
 });
 
 // delete Vendor only accessed by himself or Admin
-router.delete("/:id", verifyToken, async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   // we need to delete token from client to make sure not returning null values
   try {
     if (req.params.id !== req.user._id || req.user.type !== "vendor")

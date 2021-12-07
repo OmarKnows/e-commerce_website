@@ -6,7 +6,7 @@ const {
 } = require("../../../controllers/joiValidation");
 
 //User Profile only accessed by himself or Admin
-router.get("/:id", verifyToken, async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     if (req.params.id !== req.user._id || req.user.type !== "user")
       throw new Error("Youd don't have permission");
@@ -18,7 +18,7 @@ router.get("/:id", verifyToken, async (req, res, next) => {
 });
 
 // update user info only accessed by himself or Admin
-router.put("/:id", verifyToken, async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   // validation for the info to be updated
   const { error } = userUpdateValidationSchema(req.body);
   if (error) return next(error.details[0]);
@@ -37,7 +37,7 @@ router.put("/:id", verifyToken, async (req, res, next) => {
 });
 
 // delete user only accessed by himself or Admin
-router.delete("/:id", verifyToken, async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   // we need to delete token from client to make sure not returning null values
   try {
     if (req.params.id !== req.user._id || req.user.type !== "user")
