@@ -1,17 +1,17 @@
 const Product = require("../src/entities/Product/Product.model");
 
-module.exports = async function verifyCartItems(orderLines) {
+module.exports = async function verifyCartsizes(orderLines) {
   // After looping throgh each product in the cart we want to make sure that
-  // the order will not be processed unless all product and its items are available
+  // the order will not be processed unless all product and its sizes are available
   // so we are making an array to save the resolved product and save them one at a time
   const transaction = [];
 
-  // First for is looping through the items inside the cart to make sure if that product exists or no
+  // First for is looping through the sizes inside the cart to make sure if that product exists or no
   // The 2nd for is looping throgh each size inside the product
-  // The 3rd for is looping through each colour inside each size inside each product ( Product[i] -> size[j] -> colour[k] )
+  // The 3rd for is looping through each color inside each size inside each product ( Product[i] -> size[j] -> color[k] )
   for (let i = 0; i < orderLines.length; i++) {
     let sizeFlag = false;
-    let colourFlag = false;
+    let colorFlag = false;
     const product = await Product.findByIdAndUpdate(orderLines[i].productId);
     if (!product) {
       // if the product doesn't exist
@@ -19,29 +19,29 @@ module.exports = async function verifyCartItems(orderLines) {
         `The product id -> ${orderLines[i].productId} doesn't exist`
       );
     }
-    for (let j = 0; j < product.items.length; j++) {
-      if (orderLines[i].size === product.items[j].itemName) {
+    for (let j = 0; j < product.sizes.length; j++) {
+      if (orderLines[i].size === product.sizes[j].sizeName) {
         sizeFlag = true;
-        for (let k = 0; k < product.items[j].colour.length; k++) {
-          if (product.items[j].colour[k].colourName === orderLines[i].colour) {
-            colourFlag = true;
+        for (let k = 0; k < product.sizes[j].color.length; k++) {
+          if (product.sizes[j].color[k].colorName === orderLines[i].color) {
+            colorFlag = true;
 
-            if (product.items[j].colour[k].quantity < orderLines[i].quantity) {
+            if (product.sizes[j].color[k].quantity < orderLines[i].quantity) {
               {
                 throw new Error(
-                  `The quantity of the colour ${orderLines[i].colour} of the size ${orderLines[i].size} of the product id -> ${orderLines[i].productId} is not enough `
+                  `The quantity of the color ${orderLines[i].color} of the size ${orderLines[i].size} of the product id -> ${orderLines[i].productId} is not enough `
                 );
               }
             } else {
-              product.items[j].colour[k].quantity -= orderLines[i].quantity;
+              product.sizes[j].color[k].quantity -= orderLines[i].quantity;
             }
-            break; // no need to continue when we find the colour
+            break; // no need to continue when we find the color
           }
         }
-        if (!colourFlag) {
-          // if the colour doesn't exist
+        if (!colorFlag) {
+          // if the color doesn't exist
           throw new Error(
-            `The colour ${orderLines[i].colour} of the size ${orderLines[i].size} of the product id -> ${orderLines[i].productId} doesn't exist`
+            `The color ${orderLines[i].color} of the size ${orderLines[i].size} of the product id -> ${orderLines[i].productId} doesn't exist`
           );
         }
         break; // no need to continue when we find the size

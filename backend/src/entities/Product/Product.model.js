@@ -28,14 +28,14 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  items: [
+  sizes: [
     // different sizes and each one could have different colours and prices
     {
-      itemName: String,
+      sizeName: String,
       price: Number,
-      colour: [
+      color: [
         {
-          colourName: String,
+          colorName: String,
           image: String,
           quantity: Number,
         },

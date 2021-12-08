@@ -8,7 +8,7 @@ const {
 //Add New Product
 router.post("/", verifyVendor, async (req, res, next) => {
   try {
-    const { name, category, subcategory, gender, description, items } =
+    const { name, category, subcategory, gender, description, sizes } =
       req.body;
 
     const newProduct = new Product({
@@ -17,7 +17,7 @@ router.post("/", verifyVendor, async (req, res, next) => {
       category,
       subcategory,
       description,
-      items,
+      sizes,
       vendorId: req.user._id,
       vendorName: req.user.username,
     });
@@ -78,7 +78,7 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-//Add New Item in a Product
+//Add New size in a Product
 router.post("/:id", verifyVendor, async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -86,9 +86,13 @@ router.post("/:id", verifyVendor, async (req, res, next) => {
     if (req.user._id != product.vendorId)
       return next(new Error("You don't have permission"));
 
-    /// the item already exists please go to update tab if u want to change
+    /// the size already exists please go to update tab if u want to change
+    for (let size = 0; size < product.sizes.length; size++) {
+      if (req.body.sizeName === product.sizes[size].sizeName)
+        throw new Error("This size already exists you can go update it");
+    }
 
-    product.items.push(req.body);
+    product.sizes.push(req.body);
     await product.save();
 
     res.json(product);
@@ -97,10 +101,10 @@ router.post("/:id", verifyVendor, async (req, res, next) => {
   }
 });
 
-//Update items  in a product
+//Update sizes  in a product
 router.put("/:id", verifyVendor, async (req, res, next) => {
   try {
-    const { name, gender, description, items } = req.body;
+    const { name, gender, description, sizes } = req.body;
 
     const product = await Product.findById(req.params.id);
     if (req.user._id != product.vendorId)
@@ -112,35 +116,33 @@ router.put("/:id", verifyVendor, async (req, res, next) => {
     if (description) product.description = description;
     /////////////////////////////////////////////////////////////////////////
 
-    /////////////////// UPDATING THE ITEMS INSIDE THE PRODUCT /////////////
-    if (items) {
-      product.items.forEach((item) => {
-        if (item.itemName === items.itemName) {
+    /////////////////// UPDATING THE sizes INSIDE THE PRODUCT /////////////
+    if (sizes) {
+      product.sizes.forEach((size) => {
+        if (size.sizeName === sizes.sizeName) {
           //if the body has price so we update it
-          if (items.price) item.price = items.price;
-          //if the body has a colour we add it to colour array
-          if (items.colour) {
+          if (sizes.price) size.price = sizes.price;
+          //if the body has a color we add it to color array
+          if (sizes.color) {
             let colorExist = false;
-            item.colour.forEach((cl) => {
-              if (colorExist) return;
-              //if the colour already exists we add 1 to quantity
-              if (cl.colourName === items.colour.colourName) {
-                cl.quantity++;
+            size.color.forEach((cl) => {
+              //if the color already exists we add the quantity
+              if (cl.colorName === sizes.color.colorName) {
+                cl.quantity += sizes.color.quantity;
                 colorExist = true;
               }
             });
-            // else we push that new colour
+            // else we push that new color
             if (colorExist === false) {
-              if (!items.colour.quantity) items.colour.quantity = 1;
-              item.colour.push(items.colour);
+              if (!sizes.color.quantity) sizes.color.quantity = 1;
+              size.color.push(sizes.color);
             }
           }
         }
       });
     }
-    /////////////////////////////////////////////////////////////////////////
     await product.save();
-    res.json(product.items);
+    res.json(product.sizes);
   } catch (err) {
     next(err);
   }
