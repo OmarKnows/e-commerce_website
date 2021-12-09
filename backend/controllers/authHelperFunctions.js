@@ -3,6 +3,9 @@ const Tailor = require("../src/entities/Tailor/Tailor.model");
 const Vendor = require("../src/entities/Vendor/Vendor.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const Token = require("../src/utils/emails/tempToken.model");
+const sendEmail = require("../src/utils/emails/sendEmail");
 
 module.exports = {
   // tailor sign up
@@ -122,13 +125,28 @@ module.exports = {
       next(err);
     }
   },
+  createResetTokenLink: async (email, id, type) => {
+    let resetToken = crypto.randomBytes(32).toString("hex");
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    hash = await bcrypt.hash(resetToken, salt);
+    await new Token({
+      userId: id,
+      usertType: type,
+      token: hash,
+      createdAt: Date.now(),
+    }).save();
+
+    const link = `http://localhost:3000/reset/${resetToken}`;
+    sendEmail(email, "Password Reset Request", link);
+  },
 };
 
 // creating user token
 function createToken(res, userId, username, type) {
   const token = jwt.sign(
     { _id: userId, username: username, type: type },
-    process.env.Token_Secret,
+    process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: "1h" }
   );
   res.json({ token: token });

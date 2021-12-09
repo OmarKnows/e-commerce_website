@@ -6,7 +6,7 @@ module.exports = {
     if (!token) return next(new Error("Please log in"));
 
     try {
-      const verifiedUser = jwt.verify(token, process.env.Token_Secret);
+      const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
       req.user = verifiedUser;
       next();
     } catch (err) {

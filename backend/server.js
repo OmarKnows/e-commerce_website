@@ -11,6 +11,8 @@ mongoose.connect(process.env.DB_CONNECT, () => console.log("Connected to DB")); 
 app.use(express.json());
 //express.urlencoded({ extended: false });
 
+// cors ********
+
 //routes middlewares
 const auth = require("./src/entities/Authentication/authentication.router");
 const { verifyToken } = require("./controllers/verification");
