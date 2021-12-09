@@ -73,7 +73,7 @@ router.post("/forget-password-request", async (req, res, next) => {
       if (token) {
         await token.deleteOne();
       }
-      createResetTokenLink(user.email, user._id, type);
+      createResetTokenLink(res, user.email, user._id, type, next);
     }
     if (type === "tailor") {
       const tailor = await Tailor.findOne({ email });
@@ -82,7 +82,7 @@ router.post("/forget-password-request", async (req, res, next) => {
       if (token) {
         await token.deleteOne();
       }
-      createResetTokenLink(tailor.email, tailor._id, type);
+      createResetTokenLink(res, tailor.email, tailor._id, type, next);
     }
     if (type === "vendor") {
       const vendor = await Vendor.findOne({ email });
@@ -91,10 +91,8 @@ router.post("/forget-password-request", async (req, res, next) => {
       if (token) {
         await token.deleteOne();
       }
-      createResetTokenLink(vendor.email, vendor._id, type);
+      createResetTokenLink(res, vendor.email, vendor._id, type, next);
     }
-
-    res.json("email sent");
   } catch (err) {
     next(err);
   }
