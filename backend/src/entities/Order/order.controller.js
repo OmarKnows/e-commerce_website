@@ -1,6 +1,31 @@
-const Product = require("../src/entities/Product/Product.model");
+const Order = require("../Order/Order.model");
+const Product = require("../Product/Product.model");
 
-module.exports = async function verifyCartsizes(orderLines) {
+exports.newOrder = async (req, res, next) => {
+  try {
+    //place order (only tailor and user can place orders)
+    if (req.user.type === "vendor")
+      throw new Error("Please signup as a user or a tailor");
+
+    const orderLines = req.body.products;
+
+    //external helper function to verify cart items
+    await verifyCartsizes(orderLines);
+
+    //make a new order and save it into db
+    const newOrder = new Order({
+      ownerId: req.user._id,
+      products: orderLines,
+    });
+
+    const savedOrder = await newOrder.save();
+    res.json(savedOrder);
+  } catch (error) {
+    next(error);
+  }
+};
+
+async function verifyCartsizes(orderLines) {
   // After looping throgh each product in the cart we want to make sure that
   // the order will not be processed unless all product and its sizes are available
   // so we are making an array to save the resolved product and save them one at a time
@@ -59,4 +84,4 @@ module.exports = async function verifyCartsizes(orderLines) {
     // save order as one transaction so if there was any error in the cart nothing could be happen in the db
     await pro.save();
   });
-};
+}

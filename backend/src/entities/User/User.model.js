@@ -4,14 +4,10 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    max: 255,
-    min: 6,
   },
   password: {
     type: String,
     required: true,
-    max: 1024,
-    min: 6,
   },
   phone: {
     type: Number,
@@ -22,12 +18,25 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  userType: {
+    // basic user, tailor or a vendor
+    type: String,
+    required: true,
+  },
   location: {
     type: String,
   },
+  description: {
+    type: String,
+  },
+  tailorType: {
+    // men or women
+    type: String,
+  },
   img: {},
-  orders: {},
-  wishlist: {},
+  userOrders: {},
+  userWishlist: {},
+  vendorItems: {},
 });
 
 module.exports = mongoose.model("User", userSchema);

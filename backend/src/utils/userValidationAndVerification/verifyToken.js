@@ -13,9 +13,4 @@ module.exports = {
       next(new Error("Invalid Token"));
     }
   },
-  verifyVendor: (req, res, next) => {
-    if (req.user.type !== "vendor")
-      return next(new Error("Please sign up as a vendor"));
-    next();
-  },
 };

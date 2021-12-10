@@ -7,7 +7,7 @@ const userRegisterValidationSchema = (data) => {
     password: Joi.string().min(6).required(),
     phone: Joi.number().min(6).required(),
     location: Joi.string().min(6).required(),
-    type: Joi.string().required(),
+    userType: Joi.string().required(),
     description: Joi.string().min(6),
     tailorType: Joi.string().min(3),
   });
@@ -18,7 +18,6 @@ const userLoginValidationSchema = (data) => {
   const schema = Joi.object({
     email: Joi.string().min(6).required().email(),
     password: Joi.string().min(6).required(),
-    type: Joi.string().required(),
   });
   return schema.validate(data);
 };

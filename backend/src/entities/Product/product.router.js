@@ -1,13 +1,10 @@
 const router = require("express").Router({ mergeParams: true });
 const Product = require("./Product.model");
-const {
-  verifyToken,
-  verifyVendor,
-} = require("../../../controllers/verification");
 
 //Add New Product
-router.post("/", verifyVendor, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
+    if (req.body.userType !== "vendor") return next();
     const { name, category, subcategory, gender, description, sizes } =
       req.body;
 
@@ -79,8 +76,10 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //Add New size in a Product
-router.post("/:id", verifyVendor, async (req, res, next) => {
+router.post("/:id", async (req, res, next) => {
   try {
+    if (req.body.userType !== "vendor") return next();
+
     const product = await Product.findById(req.params.id);
 
     if (req.user._id != product.vendorId)
@@ -102,8 +101,10 @@ router.post("/:id", verifyVendor, async (req, res, next) => {
 });
 
 //Update sizes  in a product
-router.put("/:id", verifyVendor, async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   try {
+    if (req.body.userType !== "vendor") return next();
+
     const { name, gender, description, sizes } = req.body;
 
     const product = await Product.findById(req.params.id);
@@ -149,8 +150,10 @@ router.put("/:id", verifyVendor, async (req, res, next) => {
 });
 
 //delete a product
-router.delete("/:id", verifyVendor, async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
+    if (req.body.userType !== "vendor") return next();
+
     const product = await Product.findById(req.params.id);
     if (!product) throw new Error("Product Is Not Found");
     if (req.user._id != product.vendorId)
