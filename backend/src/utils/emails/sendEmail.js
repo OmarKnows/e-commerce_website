@@ -4,8 +4,8 @@ const sendEmail = async (email, subject, template) => {
   let smtpConfig = {
     service: "gmail",
     auth: {
-      user: "sherifismail44@gmail.com",
-      pass: "allahraby",
+      user: process.env.HOST_EMAIL,
+      pass: process.env.HOST_PASS,
     },
   };
   let transporter = nodemailer.createTransport(smtpConfig);

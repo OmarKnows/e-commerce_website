@@ -15,10 +15,7 @@ exports.signUp = async (req, res, next) => {
     if (error) return next(error.details[0]);
 
     //hashing password
-    const PlainPassword = req.body.password,
-      saltRounds = 10,
-      salt = await bcrypt.genSalt(saltRounds),
-      UserHashedPassword = await bcrypt.hash(PlainPassword, salt);
+    const UserHashedPassword = await hashing(req.body.password);
 
     return creatNewUser(req, res, next, UserHashedPassword);
   } catch (err) {
@@ -66,9 +63,10 @@ exports.resetPassword = async (req, res, next) => {
     if (!isValid) {
       throw new Error("Invalid or expired password reset token");
     }
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hash = await bcrypt.hash(req.body.password, salt);
+
+    //hashing password
+    const hash = await hashing(req.body.password);
+
     await User.updateOne(
       { _id: userId },
       { $set: { password: hash } },
@@ -88,7 +86,6 @@ exports.resetPassword = async (req, res, next) => {
   }
 };
 
-// sign up
 const creatNewUser = async (req, res, next, UserHashedPassword) => {
   const { username, email, userType, location, phone, description } = req.body;
   try {
@@ -106,6 +103,11 @@ const creatNewUser = async (req, res, next, UserHashedPassword) => {
     });
 
     const savedUser = await newUser.save();
+    await sendEmail(
+      email,
+      "Welcome To Ebra w Fatla Website",
+      `<h3>Thank you ${savedUser.username}, for joining us</h3>`
+    );
     res.json({ NewUser: savedUser._id, username: username });
   } catch (err) {
     next(err);
@@ -131,9 +133,10 @@ const userLogIn = async (req, res, next) => {
 const createResetTokenLink = async (res, email, id, next) => {
   try {
     let resetToken = crypto.randomBytes(32).toString("hex");
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
-    hash = await bcrypt.hash(resetToken, salt);
+
+    // hashing token
+    const hash = await hashing(resetToken);
+
     await new Token({
       userId: id,
       token: hash,
@@ -160,4 +163,11 @@ function createToken(res, userId, username, userType) {
     { expiresIn: "1h" }
   );
   res.json({ token: token });
+}
+
+async function hashing(plainText) {
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(plainText, salt);
+  return hash;
 }
