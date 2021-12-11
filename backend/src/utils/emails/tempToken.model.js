@@ -5,10 +5,6 @@ const tempTokenSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
-  usertType: {
-    type: String,
-    required: true,
-  },
   token: {
     type: String,
     required: true,

@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-const sendEmail = async (email, subject, link) => {
+const sendEmail = async (email, subject, template) => {
   let smtpConfig = {
     service: "gmail",
     auth: {
@@ -11,11 +11,11 @@ const sendEmail = async (email, subject, link) => {
   let transporter = nodemailer.createTransport(smtpConfig);
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"Fred Foo 👻" <sherifismail44@gmail.com>', // sender address
+    from: '"Ebra w Fatla Website 💉" <sherifismail44@gmail.com>', // sender address
     to: email, // list of receivers
-    subject: `${subject} ✔`, // Subject line
+    subject: `${subject}`, // Subject line
     text: "Hello world?", // plain text body
-    html: ` <b>reset password link -> <a href="${link}">link</a> </b>`, // html body
+    html: template, // html body
   });
 };
 
