@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
   img: {},
   userOrders: {},
   userWishlist: {},
-  vendorItems: {},
+  vendorItems: [Object],
 });
 
 module.exports = mongoose.model("User", userSchema);

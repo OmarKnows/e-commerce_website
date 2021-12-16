@@ -16,7 +16,7 @@ exports.getTailors = async (req, res, next) => {
 exports.getUsers = async (req, res, next) => {
   try {
     const getUser = await User.findById(req.params.id);
-    if (!getTailors) throw new Error("No users found");
+    if (!getUser) throw new Error("No users found");
     res.json(getUser);
   } catch (err) {
     next(err);
@@ -41,9 +41,6 @@ exports.updateUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
   // we need to delete token from client to make sure not returning null values
   try {
-    if (req.params.id !== req.user._id || req.user.type !== "user")
-      throw new Error("Youd don't have permission"); ////// user can only delete himself or Admin
-
     const deletedUser = await User.findByIdAndDelete(req.user._id);
     if (!deletedUser) return next(); // if the user does not exist
     res.json(deletedUser);

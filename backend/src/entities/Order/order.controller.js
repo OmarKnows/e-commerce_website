@@ -1,5 +1,6 @@
 const Order = require("../Order/Order.model");
 const Product = require("../Product/Product.model");
+const sendEmail = require("../../utils/emails/sendEmail");
 
 exports.newOrder = async (req, res, next) => {
   try {
@@ -19,6 +20,19 @@ exports.newOrder = async (req, res, next) => {
     });
 
     const savedOrder = await newOrder.save();
+    const purchasedProduct = await Promise.all(
+      savedOrder.products.map(async (element) => {
+        const prod = await Product.findById(element.productId);
+        return prod.name;
+      })
+    );
+
+    await sendEmail(
+      req.user.userMail,
+      "Ebra W Fatla Order Confirmation",
+      `<h3>Thank you ${req.user.username}</h3> 
+      `
+    );
     res.json(savedOrder);
   } catch (error) {
     next(error);
@@ -34,31 +48,38 @@ async function verifyCartsizes(orderLines) {
   // First for is looping through the sizes inside the cart to make sure if that product exists or no
   // The 2nd for is looping throgh each size inside the product
   // The 3rd for is looping through each color inside each size inside each product ( Product[i] -> size[j] -> color[k] )
-  for (let i = 0; i < orderLines.length; i++) {
+  for (let line = 0; line < orderLines.length; line++) {
     let sizeFlag = false;
     let colorFlag = false;
-    const product = await Product.findByIdAndUpdate(orderLines[i].productId);
+    const product = await Product.findByIdAndUpdate(orderLines[line].productId);
     if (!product) {
       // if the product doesn't exist
       throw new Error(
-        `The product id -> ${orderLines[i].productId} doesn't exist`
+        `The product id -> ${orderLines[line].productId} doesn't exist`
       );
     }
-    for (let j = 0; j < product.sizes.length; j++) {
-      if (orderLines[i].size === product.sizes[j].sizeName) {
+    for (let size = 0; size < product.sizes.length; size++) {
+      if (orderLines[line].size === product.sizes[size].sizeName) {
         sizeFlag = true;
-        for (let k = 0; k < product.sizes[j].color.length; k++) {
-          if (product.sizes[j].color[k].colorName === orderLines[i].color) {
+        for (let cl = 0; cl < product.sizes[size].color.length; cl++) {
+          if (
+            product.sizes[size].color[cl].colorName === orderLines[line].color
+          ) {
             colorFlag = true;
 
-            if (product.sizes[j].color[k].quantity < orderLines[i].quantity) {
+            if (
+              product.sizes[size].color[cl].quantity <
+                orderLines[line].quantity ||
+              product.sizes[size].color[cl].quantity === 0
+            ) {
               {
                 throw new Error(
-                  `The quantity of the color ${orderLines[i].color} of the size ${orderLines[i].size} of the product id -> ${orderLines[i].productId} is not enough `
+                  `The quantity of the color ${orderLines[line].color} of the size ${orderLines[line].size} of the product id -> ${orderLines[line].productId} is not enough `
                 );
               }
             } else {
-              product.sizes[j].color[k].quantity -= orderLines[i].quantity;
+              product.sizes[size].color[cl].quantity -=
+                orderLines[line].quantity;
             }
             break; // no need to continue when we find the color
           }
@@ -66,7 +87,7 @@ async function verifyCartsizes(orderLines) {
         if (!colorFlag) {
           // if the color doesn't exist
           throw new Error(
-            `The color ${orderLines[i].color} of the size ${orderLines[i].size} of the product id -> ${orderLines[i].productId} doesn't exist`
+            `The color ${orderLines[line].color} of the size ${orderLines[line].size} of the product id -> ${orderLines[line].productId} doesn't exist`
           );
         }
         break; // no need to continue when we find the size
@@ -75,7 +96,7 @@ async function verifyCartsizes(orderLines) {
     if (!sizeFlag) {
       // if the size doesn't exist
       throw new Error(
-        `The size ${orderLines[i].size} of the product id -> ${orderLines[i].productId} doesn't exist`
+        `The size ${orderLines[line].size} of the product id -> ${orderLines[line].productId} doesn't exist`
       );
     }
     transaction.push(product);

@@ -1,8 +1,10 @@
 const Product = require("./Product.model");
+const User = require("../User/User.model");
 
 exports.addNewProduct = async (req, res, next) => {
   try {
-    if (req.body.userType !== "vendor") return next();
+    if (req.user.userType !== "vendor")
+      throw new Error("Please Sign up as a vendor");
     const { name, category, subcategory, gender, description, sizes } =
       req.body;
 
@@ -16,8 +18,10 @@ exports.addNewProduct = async (req, res, next) => {
       vendorId: req.user._id,
       vendorName: req.user.username,
     });
+    const vendor = await User.findById(req.user._id);
     const savedProduct = await newProduct.save();
-
+    vendor.vendorItems.push(savedProduct);
+    await vendor.save();
     res.json(savedProduct);
   } catch (err) {
     next(err);
@@ -37,7 +41,7 @@ exports.getAllProducts = async (req, res, next) => {
 exports.getCategoryProducts = async (req, res, next) => {
   try {
     const products = await Product.find({
-      category: req.params.category,
+      category: req.params.category.toLowerCase(),
     });
     if (products.length === 0) next();
     else res.json(products);
@@ -49,8 +53,8 @@ exports.getCategoryProducts = async (req, res, next) => {
 exports.getSubcategoryProducts = async (req, res, next) => {
   try {
     const products = await Product.find({
-      category: req.params.category,
-      subcategory: req.params.subcategory,
+      category: req.params.category.toLowerCase(),
+      subcategory: req.params.subcategory.toLowerCase(),
     });
     if (products.length === 0) next();
     else res.json(products);
@@ -71,7 +75,8 @@ exports.getOneProduct = async (req, res, next) => {
 
 exports.addNewSize = async (req, res, next) => {
   try {
-    if (req.body.userType !== "vendor") return next();
+    if (req.user.userType !== "vendor")
+      throw new Error("Please Sign up as a vendor");
 
     const product = await Product.findById(req.params.id);
 
@@ -95,7 +100,8 @@ exports.addNewSize = async (req, res, next) => {
 
 exports.updateSizes = async (req, res, next) => {
   try {
-    if (req.body.userType !== "vendor") return next();
+    if (req.user.userType !== "vendor")
+      throw new Error("Please Sign up as a vendor");
 
     const { name, gender, description, sizes } = req.body;
 
@@ -143,7 +149,8 @@ exports.updateSizes = async (req, res, next) => {
 
 exports.deleteProduct = async (req, res, next) => {
   try {
-    if (req.body.userType !== "vendor") return next();
+    if (req.user.userType !== "vendor")
+      throw new Error("Please Sign up as a vendor");
 
     const product = await Product.findById(req.params.id);
     if (!product) throw new Error("Product Is Not Found");

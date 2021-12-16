@@ -108,7 +108,7 @@ const creatNewUser = async (req, res, next, UserHashedPassword) => {
       "Welcome To Ebra w Fatla Website",
       `<h3>Thank you ${savedUser.username}, for joining us</h3>`
     );
-    res.json({ NewUser: savedUser._id, username: username });
+    res.json({ NewUserId: savedUser._id, username: username });
   } catch (err) {
     next(err);
   }
@@ -124,7 +124,13 @@ const userLogIn = async (req, res, next) => {
       foundUser.password
     );
     if (!validPass) throw new Error("passowrd didn't match");
-    createToken(res, foundUser._id, foundUser.username, foundUser.userType); // assign a token for each user
+    createToken(
+      res,
+      foundUser._id,
+      foundUser.username,
+      foundUser.userType,
+      foundUser.email
+    ); // assign a token for each user
   } catch (err) {
     next(err);
   }
@@ -156,9 +162,9 @@ const createResetTokenLink = async (res, email, id, next) => {
 };
 
 // creating login token
-function createToken(res, userId, username, userType) {
+function createToken(res, userId, username, userType, userMail) {
   const token = jwt.sign(
-    { _id: userId, username, userType },
+    { _id: userId, username, userType, userMail },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: "1h" }
   );
