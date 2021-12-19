@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const corsMiddleware = require("./src/utils/cors");
 
 dotenv.config();
 
@@ -11,7 +12,9 @@ mongoose.connect(process.env.DB_CONNECT, () => console.log("Connected to DB")); 
 app.use(express.json());
 //express.urlencoded({ extended: false });
 
-// cors ********
+// cross origin resource sharing
+app.options("*", corsMiddleware);
+app.use(corsMiddleware);
 
 //routes middlewares
 const auth = require("./src/entities/Authentication/authentication.router");
