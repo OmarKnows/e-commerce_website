@@ -2,18 +2,19 @@ const User = require("../User/User.model");
 const {
   userUpdateValidationSchema,
 } = require("../../utils/userValidationAndVerification/joiValidation");
+const { findById } = require("../Order/Order.model");
 
-exports.getTailors = async (req, res, next) => {
+exports.getUser = async (req, res, next) => {
   try {
-    const getTailors = await User.find({ userType: "tailor" });
-    if (!getTailors) throw new Error("No tailors found");
-    res.json(getTailors);
+    const getUser = await User.find({ userType: req.params.userType });
+    if (!getUser) throw new Error("No users found");
+    res.json(getUser);
   } catch (err) {
     next(err);
   }
 };
 
-exports.getUsers = async (req, res, next) => {
+exports.getOneUser = async (req, res, next) => {
   try {
     const getUser = await User.findById(req.params.id);
     if (!getUser) throw new Error("No users found");

@@ -1,9 +1,11 @@
 const router = require("express").Router();
 const userController = require("./user.controller");
 
-router.get("/tailors", userController.getTailors);
+// get users based on type ( vendor, tailor or a basic user)
+router.get("/:userType", userController.getUser);
 
-router.get("/:id", userController.getUsers);
+// get one user
+router.get("/:id", userController.getOneUser);
 
 // update user info
 router.put("/:id", userController.updateUser);

@@ -34,8 +34,8 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   img: {},
-  userOrders: {},
-  userWishlist: {},
+  userOrders: [Object],
+  userWishlist: [Object],
   vendorItems: [Object],
 });
 

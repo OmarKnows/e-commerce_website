@@ -166,3 +166,53 @@ exports.deleteProduct = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.addToWishlist = async (req, res, next) => {
+  try {
+    if (req.user.userType === "vendor") return next(); // valid only for basic users and tailors
+    const product = await Product.findById(req.params.id);
+    const user = await User.findById(req.user._id);
+
+    const productExists = user.userWishlist.some((prod) => {
+      return prod._id == product.id;
+    });
+
+    if (productExists)
+      throw new Error("This Product already exists in your wishlist");
+
+    user.userWishlist.push(product);
+    await user.save();
+
+    res.json({ message: "product added to your wishlist" });
+  } catch (err) {
+    next(err);
+  }
+};
+exports.getWishlist = async (req, res, next) => {
+  try {
+    if (req.user.userType === "vendor") return next(); // valid only for basic users and tailors
+    const user = await User.findById(req.user._id);
+    if (user.userWishlist.length === 0)
+      res.json({ message: " There is no items in your wish list" });
+    res.json(user.userWishlist);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.removeFromWishlist = async (req, res, next) => {
+  try {
+    if (req.user.userType === "vendor") return next(); // valid only for basic users and tailors
+    const user = await User.findById(req.user._id);
+    user.userWishlist.forEach(async (wish) => {
+      if (wish._id == req.params.id) {
+        const idx = user.userWishlist.indexOf(wish);
+        user.userWishlist.splice(idx, 1);
+        await user.save();
+      }
+    });
+    res.json({ message: "item removed" });
+  } catch (err) {
+    next(err);
+  }
+};

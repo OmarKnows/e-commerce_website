@@ -42,7 +42,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send({ error: err.message });
 });
 
-const port = process.env.PORT || 4000; //running server
+const port = process.env.PORT || 5000; //running server
 app.listen(port, () => {
   console.log("listining !!" + port);
 });

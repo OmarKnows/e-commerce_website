@@ -25,4 +25,16 @@ router.put("/:id", productController.updateSizes);
 //delete a product
 router.delete("/:id", productController.deleteProduct);
 
+// get a wishlist
+router.get("/user/wishlist", productController.getWishlist);
+
+// add to a wishlist
+router.post("/user/add-to-wishlist/:id", productController.addToWishlist);
+
+// remove from a wishlist
+router.delete(
+  "/user/remove-from-wishlist/:id",
+  productController.removeFromWishlist
+);
+
 module.exports = router;
