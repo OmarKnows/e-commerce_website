@@ -37,4 +37,10 @@ router.delete(
   productController.removeFromWishlist
 );
 
+// add review
+router.post("/review/add-review/:id", productController.addReview);
+
+// delete review
+router.delete("/review/delete-review/:id", productController.deleteReview);
+
 module.exports = router;
