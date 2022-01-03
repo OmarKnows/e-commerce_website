@@ -262,10 +262,3 @@ exports.addReview = async (req, res, next) => {
     next(err);
   }
 };
-
-exports.deleteReview = async (req, res, next) => {
-  try {
-  } catch (err) {
-    next(err);
-  }
-};
