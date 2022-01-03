@@ -1,8 +1,13 @@
 const router = require("express").Router();
 const productController = require("./product.controller");
+const uploadImage = require("../../utils/image upload/uploadImg");
 
 //Add New Product
-router.post("/", productController.addNewProduct);
+router.post(
+  "/",
+  uploadImage.array("productImages", 6),
+  productController.addNewProduct
+);
 
 //Get all products
 router.get("/", productController.getAllProducts);

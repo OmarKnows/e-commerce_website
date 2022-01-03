@@ -12,6 +12,8 @@ mongoose.connect(process.env.DB_CONNECT, () => console.log("Connected to DB")); 
 app.use(express.json());
 //express.urlencoded({ extended: false });
 
+app.use("/uploads", express.static("uploads"));
+
 // cross origin resource sharing
 app.options("*", corsMiddleware);
 app.use(corsMiddleware);

@@ -3,6 +3,13 @@ const User = require("../User/User.model");
 
 exports.addNewProduct = async (req, res, next) => {
   try {
+    // handling multiple images
+    const imagesFiles = req.files;
+    const imgs = [];
+    imagesFiles.forEach((img) => {
+      imgs.push(img.path);
+    });
+
     if (req.user.userType !== "vendor")
       throw new Error("Please Sign up as a vendor");
     const { name, category, subcategory, gender, description, sizes } =
@@ -17,6 +24,7 @@ exports.addNewProduct = async (req, res, next) => {
       sizes,
       vendorId: req.user._id,
       vendorName: req.user.username,
+      productImage: imgs,
     });
     const vendor = await User.findById(req.user._id);
     const savedProduct = await newProduct.save();
