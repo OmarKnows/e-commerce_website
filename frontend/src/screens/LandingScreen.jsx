@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
 const LandingScreen = () => {
   return (
     <div>
-      <h1>Landing Page</h1>
+      <h1 className="text-center mt-5">E-commerce Website</h1>
     </div>
-  )
-}
+  );
+};
 
-export default LandingScreen
+export default LandingScreen;

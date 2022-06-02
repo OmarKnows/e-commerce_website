@@ -1,32 +1,32 @@
-import React from 'react'
-import { Navbar, Nav, Container } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
+import React from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 
 const Header = () => {
   return (
     <header>
       <Navbar
-        className='navbar navbar-expand-lg navbar-dark bg-primary'
+        className="navbar navbar-expand-lg navbar-dark bg-primary"
         collapseOnSelect
       >
         <Container>
-          <LinkContainer to='/'>
+          <LinkContainer to="/">
             <Navbar.Brand>E-Com</Navbar.Brand>
           </LinkContainer>
-          <Navbar.Toggle aria-controls='basic-navbar-nav' />
-          <Navbar.Collapse id='basic-navbar-nav'>
-            <Nav className='ml-auto'>
-              <LinkContainer to='/cart'>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="ml-auto">
+              <LinkContainer to="/login">
                 <Nav.Link>
                   <i></i> Log in
                 </Nav.Link>
               </LinkContainer>
-              <LinkContainer to='/login'>
+              <LinkContainer to="/signup">
                 <Nav.Link>
                   <i></i> Sign Up
                 </Nav.Link>
               </LinkContainer>
-              <LinkContainer to='/login'>
+              <LinkContainer to="/about">
                 <Nav.Link>
                   <i></i> About
                 </Nav.Link>
@@ -36,7 +36,7 @@ const Header = () => {
         </Container>
       </Navbar>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
