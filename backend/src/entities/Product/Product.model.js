@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const reviewSchema = mongoose.Schema(
   {
@@ -8,7 +8,7 @@ const reviewSchema = mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: 'User',
     },
   },
   {
@@ -45,10 +45,7 @@ const productSchema = new mongoose.Schema({
   },
   vendorId: {
     type: mongoose.Schema.Types.ObjectId,
-  },
-  vendorName: {
-    type: String,
-    required: true,
+    ref: 'User',
   },
   sizes: [
     // different sizes and each one could have different colours and prices
@@ -72,4 +69,4 @@ const productSchema = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model('Product', productSchema);

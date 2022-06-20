@@ -1,7 +1,7 @@
-const Product = require("./Product.model");
-const User = require("../User/User.model");
+const Product = require('./Product.model');
+const User = require('../User/User.model');
 
-exports.addNewProduct = async (req, res, next) => {
+const addNewProduct = async (req, res, next) => {
   try {
     // handling multiple images
     const imagesFiles = req.files;
@@ -10,8 +10,8 @@ exports.addNewProduct = async (req, res, next) => {
       imgs.push(img.path);
     });
 
-    if (req.user.userType !== "vendor")
-      throw new Error("Please Sign up as a vendor");
+    if (req.user.userType !== 'vendor')
+      throw new Error('Please Sign up as a vendor');
     const { name, category, subcategory, gender, description, sizes } =
       req.body;
 
@@ -36,17 +36,17 @@ exports.addNewProduct = async (req, res, next) => {
   }
 };
 
-exports.getAllProducts = async (req, res, next) => {
+const getAllProducts = async (req, res, next) => {
   try {
     const products = await Product.find();
-    if (products.length === 0) throw new Error("There is no products found");
+    if (products.length === 0) throw new Error('There is no products found');
     else res.json(products);
   } catch (err) {
     next(err);
   }
 };
 
-exports.getCategoryProducts = async (req, res, next) => {
+const getCategoryProducts = async (req, res, next) => {
   try {
     const products = await Product.find({
       category: req.params.category.toLowerCase(),
@@ -58,7 +58,7 @@ exports.getCategoryProducts = async (req, res, next) => {
   }
 };
 
-exports.getSubcategoryProducts = async (req, res, next) => {
+const getSubcategoryProducts = async (req, res, next) => {
   try {
     const products = await Product.find({
       category: req.params.category.toLowerCase(),
@@ -71,20 +71,20 @@ exports.getSubcategoryProducts = async (req, res, next) => {
   }
 };
 
-exports.getOneProduct = async (req, res, next) => {
+const getOneProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
-    if (!product) throw new Error("There is no product found");
+    if (!product) throw new Error('There is no product found');
     else res.json(product);
   } catch (err) {
     next(err);
   }
 };
 
-exports.addNewSize = async (req, res, next) => {
+const addNewSize = async (req, res, next) => {
   try {
-    if (req.user.userType !== "vendor")
-      throw new Error("Please Sign up as a vendor");
+    if (req.user.userType !== 'vendor')
+      throw new Error('Please Sign up as a vendor');
 
     const product = await Product.findById(req.params.id);
 
@@ -94,7 +94,7 @@ exports.addNewSize = async (req, res, next) => {
     /// the size already exists please go to update tab if u want to change
     for (let size = 0; size < product.sizes.length; size++) {
       if (req.body.sizeName === product.sizes[size].sizeName)
-        throw new Error("This size already exists you can go update it");
+        throw new Error('This size already exists you can go update it');
     }
 
     product.sizes.push(req.body);
@@ -105,11 +105,10 @@ exports.addNewSize = async (req, res, next) => {
     next(err);
   }
 };
-
-exports.updateSizes = async (req, res, next) => {
+const updateSizes = async (req, res, next) => {
   try {
-    if (req.user.userType !== "vendor")
-      throw new Error("Please Sign up as a vendor");
+    if (req.user.userType !== 'vendor')
+      throw new Error('Please Sign up as a vendor');
 
     const { name, gender, description, sizes } = req.body;
 
@@ -155,17 +154,17 @@ exports.updateSizes = async (req, res, next) => {
   }
 };
 
-exports.deleteProduct = async (req, res, next) => {
+const deleteProduct = async (req, res, next) => {
   try {
-    if (req.user.userType !== "vendor")
-      throw new Error("Please Sign up as a vendor");
+    if (req.user.userType !== 'vendor')
+      throw new Error('Please Sign up as a vendor');
 
     const product = await Product.findById(req.params.id);
-    if (!product) throw new Error("Product Is Not Found");
+    if (!product) throw new Error('Product Is Not Found');
     if (req.user._id != product.vendorId)
       return next(new Error("You don't have permission"));
 
-    const Mongoose = require("mongoose");
+    const Mongoose = require('mongoose');
     const productId = Mongoose.Types.ObjectId(req.params.id);
     const deleteProduct = await Product.findByIdAndRemove(productId);
 
@@ -175,9 +174,9 @@ exports.deleteProduct = async (req, res, next) => {
   }
 };
 
-exports.addToWishlist = async (req, res, next) => {
+const addToWishlist = async (req, res, next) => {
   try {
-    if (req.user.userType === "vendor") return next(); // valid only for basic users and tailors
+    if (req.user.userType === 'vendor') return next(); // valid only for basic users and tailors
     const product = await Product.findById(req.params.id);
     const user = await User.findById(req.user._id);
 
@@ -186,31 +185,30 @@ exports.addToWishlist = async (req, res, next) => {
     });
 
     if (productExists)
-      throw new Error("This Product already exists in your wishlist");
+      throw new Error('This Product already exists in your wishlist');
 
     user.userWishlist.push(product);
     await user.save();
 
-    res.json({ message: "product added to your wishlist" });
+    res.json({ message: 'product added to your wishlist' });
   } catch (err) {
     next(err);
   }
 };
-exports.getWishlist = async (req, res, next) => {
+const getWishlist = async (req, res, next) => {
   try {
-    if (req.user.userType === "vendor") return next(); // valid only for basic users and tailors
+    if (req.user.userType === 'vendor') return next(); // valid only for basic users and tailors
     const user = await User.findById(req.user._id);
     if (user.userWishlist.length === 0)
-      res.json({ message: " There is no items in your wish list" });
+      res.json({ message: ' There is no items in your wish list' });
     res.json(user.userWishlist);
   } catch (err) {
     next(err);
   }
 };
-
-exports.removeFromWishlist = async (req, res, next) => {
+const removeFromWishlist = async (req, res, next) => {
   try {
-    if (req.user.userType === "vendor") return next(); // valid only for basic users and tailors
+    if (req.user.userType === 'vendor') return next(); // valid only for basic users and tailors
     const user = await User.findById(req.user._id);
     user.userWishlist.forEach(async (wish) => {
       if (wish._id == req.params.id) {
@@ -219,13 +217,12 @@ exports.removeFromWishlist = async (req, res, next) => {
         await user.save();
       }
     });
-    res.json({ message: "item removed" });
+    res.json({ message: 'item removed' });
   } catch (err) {
     next(err);
   }
 };
-
-exports.addReview = async (req, res, next) => {
+const addReview = async (req, res, next) => {
   try {
     const { rating, comment } = req.body;
 
@@ -238,7 +235,7 @@ exports.addReview = async (req, res, next) => {
 
       if (alreadyReviewed) {
         res.status(400);
-        throw new Error("Product already reviewed");
+        throw new Error('Product already reviewed');
       }
 
       const review = {
@@ -256,9 +253,18 @@ exports.addReview = async (req, res, next) => {
 
       await product.save();
       console.log(product.rating);
-      res.json({ message: "Review added" });
+      res.json({ message: 'Review added' });
     }
   } catch (err) {
     next(err);
   }
+};
+
+module.exports = {
+  addNewProduct,
+  getAllProducts,
+  getOneProduct,
+  addNewSize,
+  updateSizes,
+  deleteProduct,
 };

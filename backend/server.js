@@ -1,41 +1,35 @@
-const express = require("express");
+require('dotenv').config();
+
+const express = require('express');
 const app = express();
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
-const corsMiddleware = require("./src/utils/cors");
-
-dotenv.config();
-
-mongoose.connect(process.env.DB_CONNECT, () => console.log("Connected to DB")); // connecting to db
+const dbConnection = require('./config/db');
+const cors = require('cors');
 
 //middlewares
 app.use(express.json());
+app.use(cors());
 //express.urlencoded({ extended: false });
 
-app.use("/uploads", express.static("uploads"));
-
-// cross origin resource sharing
-app.options("*", corsMiddleware);
-app.use(corsMiddleware);
+//app.use('/uploads', express.static('uploads'));
 
 //routes middlewares
-const auth = require("./src/entities/Authentication/authentication.router");
+const auth = require('./src/entities/Authentication/authentication.router');
 const {
   verifyToken,
-} = require("./src/utils/userValidationAndVerification/verifyToken");
-const users = require("./src/entities/User/user.router");
-const products = require("./src/entities/Product/product.router");
-const orders = require("./src/entities/Order/order.router");
+} = require('./src/utils/userValidationAndVerification/verifyToken');
+const users = require('./src/entities/User/user.router');
+const products = require('./src/entities/Product/product.router');
+const orders = require('./src/entities/Order/order.router');
 
-app.use("/auth", auth);
+app.use('/auth', auth);
 app.use(verifyToken);
-app.use("/users", users);
-app.use("/products", products);
-app.use("/order", orders);
+app.use('/users', users);
+app.use('/products', products);
+app.use('/order', orders);
 
 //Error Handling
 app.use((req, res, next) => {
-  const err = new Error("Page not found");
+  const err = new Error('Page not found');
   err.status = 404;
   next(err);
 });
@@ -45,6 +39,17 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 5000; //running server
-app.listen(port, () => {
-  console.log("listining !!" + port);
-});
+
+const start = async () => {
+  try {
+    await dbConnection(process.env.MONGO_URI);
+    console.log('Database connected');
+    app.listen(port, () => {
+      console.log('listining on port ' + port);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();
