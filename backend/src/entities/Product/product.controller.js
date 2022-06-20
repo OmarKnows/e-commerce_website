@@ -1,80 +1,63 @@
-const Product = require('./Product.model');
-const User = require('../User/User.model');
+const Product = require("./Product.model");
+const User = require("../User/User.model");
 
-const addNewProduct = async (req, res, next) => {
-  try {
-    // handling multiple images
-    const imagesFiles = req.files;
-    const imgs = [];
-    imagesFiles.forEach((img) => {
-      imgs.push(img.path);
-    });
+// todo list
+// 1- image upload
+// 2- authentication
+// 3- error handling
+// 4- review and rating
+// 5- wishlist
 
-    if (req.user.userType !== 'vendor')
-      throw new Error('Please Sign up as a vendor');
-    const { name, category, subcategory, gender, description, sizes } =
-      req.body;
+const addNewProduct = async (req, res) => {
+  const newProduct = await Product.create(req.body);
+  res.status(201).json(newProduct);
 
-    const newProduct = new Product({
-      name,
-      gender,
-      category,
-      subcategory,
-      description,
-      sizes,
-      vendorId: req.user._id,
-      vendorName: req.user.username,
-      productImage: imgs,
-    });
-    const vendor = await User.findById(req.user._id);
-    const savedProduct = await newProduct.save();
-    vendor.vendorItems.push(savedProduct);
-    await vendor.save();
-    res.json(savedProduct);
-  } catch (err) {
-    next(err);
-  }
+  // if (req.user.userType !== 'vendor')
+  //   throw new Error('Please Sign up as a vendor');
+  //const vendor = await User.findById(req.user._id);
+  //vendor.vendorItems.push(savedProduct);
 };
 
-const getAllProducts = async (req, res, next) => {
-  try {
-    const products = await Product.find();
-    if (products.length === 0) throw new Error('There is no products found');
-    else res.json(products);
-  } catch (err) {
-    next(err);
-  }
-};
+const getAllProducts = async (req, res) => {
+  const { gender, category, querySize } = req.query;
 
-const getCategoryProducts = async (req, res, next) => {
-  try {
-    const products = await Product.find({
-      category: req.params.category.toLowerCase(),
-    });
-    if (products.length === 0) next();
-    else res.json(products);
-  } catch (err) {
-    next(err);
-  }
-};
+  const queryObject = {};
+  if (gender) queryObject.gender = gender;
+  if (category) queryObject.category = category;
 
-const getSubcategoryProducts = async (req, res, next) => {
-  try {
-    const products = await Product.find({
-      category: req.params.category.toLowerCase(),
-      subcategory: req.params.subcategory.toLowerCase(),
+  let result = Product.find(queryObject);
+
+  // pagination
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  result = result.skip(skip).limit(limit);
+  const products = await result;
+
+  // search if a specific size is available
+  if (querySize) {
+    const prod = [];
+    products.forEach((element) => {
+      for (let j = 0; j < element.sizes.length; j++) {
+        if (element.sizes[j].sizeName == querySize) {
+          prod.push(element);
+          break;
+        }
+      }
     });
-    if (products.length === 0) next();
-    else res.json(products);
-  } catch (err) {
-    next(err);
+
+    return res.status(200).json({ products: prod, productCount: prod.length });
   }
+
+  if (products.length === 0) throw new Error("There are no products found");
+  res.status(200).json({ products, productCount: products.length });
 };
 
 const getOneProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
-    if (!product) throw new Error('There is no product found');
+    if (!product) throw new Error("There is no product found");
     else res.json(product);
   } catch (err) {
     next(err);
@@ -83,8 +66,8 @@ const getOneProduct = async (req, res, next) => {
 
 const addNewSize = async (req, res, next) => {
   try {
-    if (req.user.userType !== 'vendor')
-      throw new Error('Please Sign up as a vendor');
+    if (req.user.userType !== "vendor")
+      throw new Error("Please Sign up as a vendor");
 
     const product = await Product.findById(req.params.id);
 
@@ -94,7 +77,7 @@ const addNewSize = async (req, res, next) => {
     /// the size already exists please go to update tab if u want to change
     for (let size = 0; size < product.sizes.length; size++) {
       if (req.body.sizeName === product.sizes[size].sizeName)
-        throw new Error('This size already exists you can go update it');
+        throw new Error("This size already exists you can go update it");
     }
 
     product.sizes.push(req.body);
@@ -107,8 +90,8 @@ const addNewSize = async (req, res, next) => {
 };
 const updateSizes = async (req, res, next) => {
   try {
-    if (req.user.userType !== 'vendor')
-      throw new Error('Please Sign up as a vendor');
+    if (req.user.userType !== "vendor")
+      throw new Error("Please Sign up as a vendor");
 
     const { name, gender, description, sizes } = req.body;
 
@@ -156,15 +139,15 @@ const updateSizes = async (req, res, next) => {
 
 const deleteProduct = async (req, res, next) => {
   try {
-    if (req.user.userType !== 'vendor')
-      throw new Error('Please Sign up as a vendor');
+    if (req.user.userType !== "vendor")
+      throw new Error("Please Sign up as a vendor");
 
     const product = await Product.findById(req.params.id);
-    if (!product) throw new Error('Product Is Not Found');
+    if (!product) throw new Error("Product Is Not Found");
     if (req.user._id != product.vendorId)
       return next(new Error("You don't have permission"));
 
-    const Mongoose = require('mongoose');
+    const Mongoose = require("mongoose");
     const productId = Mongoose.Types.ObjectId(req.params.id);
     const deleteProduct = await Product.findByIdAndRemove(productId);
 
@@ -176,7 +159,7 @@ const deleteProduct = async (req, res, next) => {
 
 const addToWishlist = async (req, res, next) => {
   try {
-    if (req.user.userType === 'vendor') return next(); // valid only for basic users and tailors
+    if (req.user.userType === "vendor") return next(); // valid only for basic users and tailors
     const product = await Product.findById(req.params.id);
     const user = await User.findById(req.user._id);
 
@@ -185,22 +168,22 @@ const addToWishlist = async (req, res, next) => {
     });
 
     if (productExists)
-      throw new Error('This Product already exists in your wishlist');
+      throw new Error("This Product already exists in your wishlist");
 
     user.userWishlist.push(product);
     await user.save();
 
-    res.json({ message: 'product added to your wishlist' });
+    res.json({ message: "product added to your wishlist" });
   } catch (err) {
     next(err);
   }
 };
 const getWishlist = async (req, res, next) => {
   try {
-    if (req.user.userType === 'vendor') return next(); // valid only for basic users and tailors
+    if (req.user.userType === "vendor") return next(); // valid only for basic users and tailors
     const user = await User.findById(req.user._id);
     if (user.userWishlist.length === 0)
-      res.json({ message: ' There is no items in your wish list' });
+      res.json({ message: " There is no items in your wish list" });
     res.json(user.userWishlist);
   } catch (err) {
     next(err);
@@ -208,7 +191,7 @@ const getWishlist = async (req, res, next) => {
 };
 const removeFromWishlist = async (req, res, next) => {
   try {
-    if (req.user.userType === 'vendor') return next(); // valid only for basic users and tailors
+    if (req.user.userType === "vendor") return next(); // valid only for basic users and tailors
     const user = await User.findById(req.user._id);
     user.userWishlist.forEach(async (wish) => {
       if (wish._id == req.params.id) {
@@ -217,7 +200,7 @@ const removeFromWishlist = async (req, res, next) => {
         await user.save();
       }
     });
-    res.json({ message: 'item removed' });
+    res.json({ message: "item removed" });
   } catch (err) {
     next(err);
   }
@@ -235,7 +218,7 @@ const addReview = async (req, res, next) => {
 
       if (alreadyReviewed) {
         res.status(400);
-        throw new Error('Product already reviewed');
+        throw new Error("Product already reviewed");
       }
 
       const review = {
@@ -253,7 +236,7 @@ const addReview = async (req, res, next) => {
 
       await product.save();
       console.log(product.rating);
-      res.json({ message: 'Review added' });
+      res.json({ message: "Review added" });
     }
   } catch (err) {
     next(err);

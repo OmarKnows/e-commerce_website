@@ -1,20 +1,20 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const reviewSchema = mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    rating: {},
-    comment: { type: String, required: true },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: 'User',
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+// const reviewSchema = mongoose.Schema(
+//   {
+//     name: { type: String, required: true },
+//     rating: {},
+//     comment: { type: String, required: true },
+//     user: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       required: true,
+//       ref: 'User',
+//     },
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -24,28 +24,23 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-  },
-  subcategory: {
-    type: String,
-    required: true,
-  },
-  reviews: [reviewSchema],
-  rating: {
-    type: Number,
-    required: true,
-    default: 0,
+    subcategory: [
+      {
+        type: String,
+      },
+    ],
   },
   gender: {
     type: String,
-    required: true,
+    enum: ["Male", "Female"],
+    default: "Male",
   },
   description: {
     type: String,
-    required: true,
   },
   vendorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
   },
   sizes: [
     // different sizes and each one could have different colours and prices
@@ -61,12 +56,6 @@ const productSchema = new mongoose.Schema({
       ],
     },
   ],
-  productImage: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
 });
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model("Product", productSchema);
