@@ -1,5 +1,5 @@
-const Product = require("./Product.model");
-const User = require("../User/User.model");
+const Product = require('./Product.model');
+const User = require('../User/User.model');
 
 // todo list
 // 1- image upload
@@ -51,19 +51,19 @@ const getAllProducts = async (req, res) => {
     return res.status(200).json({ products: prod, productCount: prod.length });
   }
 
-  if (products.length === 0) throw new Error("There are no products found");
-  res.status(200).json({ products, productCount: products.length });
+  if (products.length === 0) throw new Error('There are no products found');
+  res.status(200).json(products);
 };
 
 const getOneProduct = async (req, res) => {
   const product = await Product.findOne({ _id: req.params.id });
-  if (!product) throw new Error("There is no product found");
+  if (!product) throw new Error('There is no product found');
   res.status(200).json(product);
 };
 
 const addNewSize = async (req, res, next) => {
-  if (req.user.userType !== "vendor")
-    throw new Error("Please Sign up as a vendor");
+  if (req.user.userType !== 'vendor')
+    throw new Error('Please Sign up as a vendor');
 
   const product = await Product.findById(req.params.id);
 
@@ -73,7 +73,7 @@ const addNewSize = async (req, res, next) => {
   /// the size already exists please go to update tab if u want to change
   for (let size = 0; size < product.sizes.length; size++) {
     if (req.body.sizeName === product.sizes[size].sizeName)
-      throw new Error("This size already exists you can go update it");
+      throw new Error('This size already exists you can go update it');
   }
 
   product.sizes.push(req.body);
@@ -82,8 +82,8 @@ const addNewSize = async (req, res, next) => {
   res.json(product);
 };
 const updateSizes = async (req, res, next) => {
-  if (req.user.userType !== "vendor")
-    throw new Error("Please Sign up as a vendor");
+  if (req.user.userType !== 'vendor')
+    throw new Error('Please Sign up as a vendor');
 
   const { name, gender, description, sizes } = req.body;
 
