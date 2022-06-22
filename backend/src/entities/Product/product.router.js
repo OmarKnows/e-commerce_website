@@ -8,13 +8,8 @@ const {
   deleteProduct,
 } = require("./product.controller");
 
-//Add New Product
-router.route("/").post(addNewProduct);
+router.route("/").post(addNewProduct).get(getAllProducts);
 
-//Get all products
-router.route("/").get(getAllProducts);
-
-//Crud
 router
   .route("/:id")
   .get(getOneProduct)

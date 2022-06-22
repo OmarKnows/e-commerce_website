@@ -1,16 +1,22 @@
 const router = require("express").Router();
-const userController = require("./user.controller");
+const {
+  getOneUser,
+  updateUser,
+  deleteUser,
+  register,
+  login,
+} = require("./user.controller");
 
-// get users based on type ( vendor, tailor or a basic user)
-router.get("/:userType", userController.getUser);
+// sign up
+router.route("/register").post(register);
 
-// get one user
-router.get("/:id", userController.getOneUser);
+// login
+router.route("/login").post(login);
 
-// update user info
-router.put("/:id", userController.updateUser);
+// get, update, delete one user
+router.route("/:id").get(getOneUser).put(updateUser).delete(deleteUser);
 
-// delete user
-router.delete("/:id", userController.deleteUser);
+// // get users based on type ( vendor, tailor or a basic user)
+// router.get("/:userType", userController.getUser);
 
 module.exports = router;

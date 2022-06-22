@@ -14,7 +14,6 @@ app.use(cors());
 //app.use('/uploads', express.static('uploads'));
 
 //routes middlewares
-// const auth = require("./src/entities/Authentication/authentication.router");
 // const {
 //   verifyToken,
 // } = require("./src/utils/userValidationAndVerification/verifyToken");
@@ -22,7 +21,6 @@ app.use(cors());
 const products = require("./src/entities/Product/product.router");
 const orders = require("./src/entities/Order/order.router");
 
-// app.use("/auth", auth);
 // app.use(verifyToken);
 // app.use("/users", users);
 app.use("/api/v1/product", products);
