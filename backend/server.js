@@ -1,25 +1,29 @@
 require("dotenv").config();
 require("express-async-errors");
 
+////// app structure /////////////////////
 const express = require("express");
 const app = express();
 const dbConnection = require("./config/db");
-const cors = require("cors");
+///////////////////////////////////////////
 
-//middlewares
+// app middlewares
+const cors = require("cors");
 app.use(express.json());
 express.urlencoded({ extended: false }); // forms
 app.use(cors());
 
 //app.use('/uploads', express.static('uploads'));
-
-//routes middlewares
 // const {
 //   verifyToken,
 // } = require("./src/utils/userValidationAndVerification/verifyToken");
 // const users = require("./src/entities/User/user.router");
 const products = require("./src/entities/Product/product.router");
 const orders = require("./src/entities/Order/order.router");
+const notFound = require("./src/utils/errors/not-found");
+const errorHandler = require("./src/utils/errors/custom-error-handler");
+
+//routes middlewares
 
 // app.use(verifyToken);
 // app.use("/users", users);
@@ -27,18 +31,10 @@ app.use("/api/v1/product", products);
 app.use("/api/v1/order", orders);
 
 //Error Handling
-app.use((req, res, next) => {
-  const err = new Error("Page not found");
-  err.status = 404;
-  next(err);
-});
-
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).send({ error: err.message });
-});
+app.use(notFound);
+app.use(errorHandler);
 
 const port = process.env.PORT || 3000; //running server
-
 const start = async () => {
   try {
     await dbConnection(process.env.MONGO_URI);
