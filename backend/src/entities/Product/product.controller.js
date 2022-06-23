@@ -54,12 +54,14 @@ const getAllProducts = async (req, res) => {
 
   if (products.length === 0)
     throw createError(404, "There are no products found");
+
   res.status(200).json(products);
 };
 
 const getOneProduct = async (req, res) => {
   const product = await Product.findOne({ _id: req.params.id });
   if (!product) throw createError(404, "There are no products found");
+
   res.status(200).json(product);
 };
 
