@@ -57,12 +57,12 @@ userSchema.pre("save", async function () {
   this.password = await bcrypt.hashSync(this.password, salt);
 });
 
-UserSchema.methods.comparePass = async function (userPass) {
+userSchema.methods.comparePass = async function (userPass) {
   const isMatch = await bcrypt.compare(userPass, this.password);
   return isMatch;
 };
 
-UserSchema.methods.CreateJWT = function () {
+userSchema.methods.CreateJWT = function () {
   return jwt.sign(
     { userId: this._id, username: this.name },
     process.env.JWT_SECRET,

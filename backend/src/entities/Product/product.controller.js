@@ -1,5 +1,6 @@
 const Product = require("./Product.model");
 const User = require("../User/User.model");
+const createError = require("../../utils/errors/error-module");
 
 // todo list
 // 1- image upload
@@ -48,48 +49,49 @@ const getAllProducts = async (req, res) => {
       }
     });
 
-    return res.status(200).json({ products: prod, productCount: prod.length });
+    return res.status(200).json(prod);
   }
 
-  if (products.length === 0) throw new Error("There are no products found");
-  res.status(200).json({ products, productCount: products.length });
+  if (products.length === 0)
+    throw createError(404, "There are no products found");
+  res.status(200).json(products);
 };
 
 const getOneProduct = async (req, res) => {
   const product = await Product.findOne({ _id: req.params.id });
-  if (!product) throw new Error("There is no product found");
+  if (!product) throw createError(404, "There are no products found");
   res.status(200).json(product);
 };
 
 const addNewSize = async (req, res, next) => {
-  if (req.user.userType !== "vendor")
-    throw new Error("Please Sign up as a vendor");
+  // if (req.user.userType !== "vendor")
+  //   throw new Error("Please Sign up as a vendor");
 
   const product = await Product.findById(req.params.id);
 
-  if (req.user._id != product.vendorId)
-    return next(new Error("You don't have permission"));
+  // if (req.user._id != product.vendorId)
+  //   return next(new Error("You don't have permission"));
 
   /// the size already exists please go to update tab if u want to change
   for (let size = 0; size < product.sizes.length; size++) {
     if (req.body.sizeName === product.sizes[size].sizeName)
-      throw new Error("This size already exists you can go update it");
+      throw createError(400, "This size already exists you can go update it");
   }
 
   product.sizes.push(req.body);
   await product.save();
 
-  res.json(product);
+  res.status(200).json(product);
 };
 const updateSizes = async (req, res, next) => {
-  if (req.user.userType !== "vendor")
-    throw new Error("Please Sign up as a vendor");
+  // if (req.user.userType !== "vendor")
+  //   throw new Error("Please Sign up as a vendor");
 
   const { name, gender, description, sizes } = req.body;
 
   const product = await Product.findById(req.params.id);
-  if (req.user._id != product.vendorId)
-    return next(new Error("You don't have permission"));
+  // if (req.user._id != product.vendorId)
+  //   return next(new Error("You don't have permission"));
 
   /////////////////////// UPDATING THE PRODUCT INFO ////////////////////////
   if (name) product.name = name;
@@ -135,7 +137,7 @@ const deleteProduct = async (req, res, next) => {
 
   const product = await Product.findOneAndDelete({ _id: req.params.id });
 
-  if (!product) throw new Error("Product doesn't exist");
+  if (!product) throw createError(404, "Product doesn't exist");
 
   res.status(200).json({ product });
 };

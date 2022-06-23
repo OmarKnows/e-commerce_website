@@ -24,11 +24,6 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    subcategory: [
-      {
-        type: String,
-      },
-    ],
   },
   gender: {
     type: String,
@@ -41,6 +36,9 @@ const productSchema = new mongoose.Schema({
   vendorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+  photo: {
+    type: String,
   },
   sizes: [
     // different sizes and each one could have different colours and prices
