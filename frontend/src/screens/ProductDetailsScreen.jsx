@@ -27,6 +27,10 @@ const ProductDetailsScreen = () => {
     dispatch(listProductDetails(params.id));
   }, [dispatch, params]);
 
+  const addToCartHandler = () => {
+    navigate(`/cart/${params.id}`);
+  };
+
   return (
     <div style={{ marginTop: '150px', marginRight: '50px' }}>
       <Container>
@@ -79,7 +83,11 @@ const ProductDetailsScreen = () => {
                   </Row>
                 </ListGroupItem>
               </ListGroup>
-              <Button className='btn btn-lg btn-primary' type='button'>
+              <Button
+                className='btn btn-lg btn-primary'
+                type='button'
+                onClick={addToCartHandler}
+              >
                 Add to Cart
               </Button>
             </Card>

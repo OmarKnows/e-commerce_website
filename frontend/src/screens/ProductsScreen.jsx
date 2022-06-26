@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
-import { Row, Col, Container } from "react-bootstrap";
-import Product from "../components/Product";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
-import { useDispatch, useSelector } from "react-redux";
-import { listProducts } from "../actions/productActions";
+import React, { useEffect } from 'react';
+import { Row, Col, Container } from 'react-bootstrap';
+import Product from '../components/Product';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
+import { useDispatch, useSelector } from 'react-redux';
+import { listProducts } from '../actions/productActions';
 
 const ProductsScreen = () => {
   const dispatch = useDispatch();
@@ -16,12 +16,12 @@ const ProductsScreen = () => {
 
   return (
     <>
-      <Container style={{ marginTop: "150px" }}>
+      <Container style={{ marginTop: '100px' }}>
         <h1>Latest Products</h1>
         {loading ? (
           <Loader></Loader>
         ) : error ? (
-          <Message variant="danger">{error}</Message>
+          <Message variant='danger'>{error}</Message>
         ) : (
           <Row>
             {products.map((product) => (

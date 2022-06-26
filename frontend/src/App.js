@@ -6,6 +6,7 @@ import VendorSignupScreen from './screens/Signup/VendorSignupScreen';
 import TailorSignupScreen from './screens/Signup/TailorSignupScreen';
 import ProductsScreen from './screens/ProductsScreen';
 import ServicesScreen from './screens/ServicesScreen';
+import CartScreen from './screens/CartScreen';
 import CustomRequestsSceen from './screens/CustomRequestsSceen';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Footer from './components/Footer';
@@ -26,6 +27,10 @@ function App() {
           <Route path='/services' element={<ServicesScreen />} exact />
           <Route path='/requests' element={<CustomRequestsSceen />} exact />
           <Route path='/product/:id' element={<ProductDetailsScreen />} />
+          <Route path='/cart/'>
+            <Route path='' element={<CartScreen />} exact />
+            <Route path=':id' element={<CartScreen />} exact />
+          </Route>
         </Routes>
       </main>
       <Footer />
