@@ -4,11 +4,9 @@ const createError = require("../../utils/errors/error-module");
 
 // todo list
 // 1- image upload
-// 2- authentication
-// 3- error handling
+// 2- authorization
 // 4- review and rating
 // 5- wishlist
-// 6- authorization
 
 const addNewProduct = async (req, res) => {
   const newProduct = await Product.create(req.body);

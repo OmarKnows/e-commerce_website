@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -26,17 +26,21 @@ const userSchema = new mongoose.Schema({
   // simple user, tailor or a vendor
   userType: {
     type: String,
+    enum: ["Tailor", "User", "Vendor"],
     required: true,
   },
 
-  // simple user
-  userOrders: [Object],
-  userWishlist: [Object],
-
   // user as a tailor
-  tailorType: {
-    // men or women
+  tailorServiceGender: {
+    // service gender
     type: String,
+    enum: ["Male", "Female"],
+  },
+  tailorService: [String],
+
+  description: {
+    type: String,
+    required: true,
   },
 
   // user as a vendor
@@ -46,13 +50,13 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
 
-  description: {
-    type: String,
-  },
+  // simple user
+  userOrders: [Object],
+  userWishlist: [Object],
 });
 
 // hashing password
-userSchema.pre('save', async function () {
+userSchema.pre("save", async function () {
   const salt = await bcrypt.genSaltSync(10);
   this.password = await bcrypt.hashSync(this.password, salt);
 });
@@ -70,4 +74,4 @@ userSchema.methods.CreateJWT = function () {
   );
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);
