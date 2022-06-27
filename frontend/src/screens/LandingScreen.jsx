@@ -1,9 +1,7 @@
 import React from 'react';
 import { Card, Col, Row, Button, Container, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import sample1 from '../images/sample1.jpg';
-import sample2 from '../images/sample2.jpeg';
-import sample3 from '../images/sample3.jpg';
+
 import products from '../images/products.jpg';
 import services from '../images/services.jpg';
 import custom from '../images/custom.jpg';
