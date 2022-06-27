@@ -10,11 +10,11 @@ const createError = require("../../utils/errors/error-module");
 //const { findById } = require("../Order/Order.model");
 
 const register = async (req, res) => {
-  const { error } = userRegisterValidationSchema(req.body); // validating body based on type
-  if (error) throw createError(400, error);
+  // const { error } = userRegisterValidationSchema(req.body); // validating body based on type
+  //if (error) throw createError(400, error);
 
-  const token = user.CreateJWT();
   const user = await User.create(req.body);
+  const token = user.CreateJWT();
   res.status(201).json({ token });
 };
 
@@ -29,6 +29,27 @@ const login = async (req, res, next) => {
 
   const token = user.CreateJWT();
   res.status(200).json({ token });
+};
+
+const getUser = async (req, res) => {
+  const { userType, serviceGender } = req.query;
+  const queryObj = {};
+
+  if (userType) queryObj.userType = userType;
+  if (serviceGender) queryObj.tailorServiceGender = serviceGender;
+
+  let result = User.find(queryObj);
+
+  // pagination
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  result = result.skip(skip).limit(limit);
+  const users = await result;
+
+  if (!users) throw createError(401, "user not found");
+  res.status(200).json({ users, nbHits: users.length });
 };
 
 const getOneUser = async (req, res) => {
@@ -57,6 +78,7 @@ const deleteUser = async (req, res) => {
 module.exports = {
   register,
   login,
+  getUser,
   getOneUser,
   updateUser,
   deleteUser,
