@@ -4,8 +4,10 @@ import './index.css';
 import App from './App';
 import axios from 'axios';
 import reportWebVitals from './reportWebVitals';
-import './lux.min.css';
+//import "./lux.min.css";
 //import "./simplex.min.css";
+//import "./ma3lsh.min.css";
+import './theme.css';
 import { Provider } from 'react-redux';
 import store from './store';
 

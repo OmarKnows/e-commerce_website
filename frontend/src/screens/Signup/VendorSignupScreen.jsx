@@ -1,9 +1,9 @@
-import React from 'react'
-import { Row, Col, Card, Container } from 'react-bootstrap'
+import React from 'react';
+import { Row, Col, Card, Container } from 'react-bootstrap';
 
 const VendorSignupScreen = () => {
   return (
-    <Container className='mt-5'>
+    <Container style={{ marginTop: '150px' }}>
       <Row>
         <Col>
           <h1>Not Sure Why This Is Here</h1>
@@ -74,7 +74,7 @@ const VendorSignupScreen = () => {
         </Col>
       </Row>
     </Container>
-  )
-}
+  );
+};
 
-export default VendorSignupScreen
+export default VendorSignupScreen;

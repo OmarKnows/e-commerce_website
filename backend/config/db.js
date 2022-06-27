@@ -1,4 +1,4 @@
-const db = require('mongoose');
+const db = require("mongoose");
 
 const dbConnect = (url) => {
   // returns a promise
