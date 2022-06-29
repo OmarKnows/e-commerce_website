@@ -12,10 +12,10 @@ const LoginScreen = () => {
               <form>
                 <div className='form-group'>
                   <input
-                    type='text'
+                    type='email'
                     className='form-control'
-                    id='username'
-                    placeholder='Username'
+                    id='email'
+                    placeholder='E-Mail'
                   />
                 </div>
                 <div className='form-group py-3'>

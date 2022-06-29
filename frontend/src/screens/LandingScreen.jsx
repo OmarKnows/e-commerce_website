@@ -10,47 +10,89 @@ import wallpaper from '../images/wallpaper.jpg';
 const LandingScreen = () => {
   return (
     <div>
-      <Image
-        src={wallpaper}
-        style={{ marginTop: '50px', marginBottom: '50px' }}
-      />
+      <div style={{ position: 'relative', height: '330px' }}>
+        <Image
+          src={wallpaper}
+          style={{
+            marginTop: '50px',
+            marginBottom: '50px',
+            width: '100%',
+          }}
+        />
+        <h1
+          style={{
+            position: 'absolute',
+            right: '70%',
+            left: '30%',
+            bottom: '10%',
+            color: 'White',
+            fontWeight: 'bold',
+            textShadow: '1px 1px #000000',
+            fontSize: '70pt',
+          }}
+        >
+          Placeholder Title
+        </h1>
+      </div>
+
       <Container>
         <Row className='text-center'>
           <Col>
-            <Card>
-              <Card.Img variant='top' src={products} fluid />
-              <Card.Body>
-                <Card.Title>Products</Card.Title>
-                <Card.Text>Check out our products.</Card.Text>
-                <Button as={Link} to='/products' variant='primary'>
-                  Go To Products
-                </Button>
-              </Card.Body>
-            </Card>
+            <Link to='/products'>
+              <Card>
+                <Card.Img src={products} fluid alt='women' />
+                <Card.ImgOverlay className='d-flex align-items-center justify-content-center'>
+                  <Card.Title
+                    style={{
+                      color: 'White',
+                      fontWeight: 'bold',
+                      textShadow: '1px 1px #000000',
+                      fontSize: '30pt',
+                    }}
+                  >
+                    Products
+                  </Card.Title>
+                </Card.ImgOverlay>
+              </Card>
+            </Link>
           </Col>
           <Col>
-            <Card>
-              <Card.Img variant='top' src={services} fluid />
-              <Card.Body>
-                <Card.Title>Services</Card.Title>
-                <Card.Text>Check out our services.</Card.Text>
-                <Button as={Link} to='/services' variant='primary'>
-                  Go To Services
-                </Button>
-              </Card.Body>
-            </Card>
+            <Link to='/services'>
+              <Card>
+                <Card.Img src={services} fluid alt='custom' />
+                <Card.ImgOverlay className='d-flex align-items-center justify-content-center'>
+                  <Card.Title
+                    style={{
+                      color: 'White',
+                      fontWeight: 'bold',
+                      textShadow: '1px 1px #000000',
+                      fontSize: '30pt',
+                    }}
+                  >
+                    Services
+                  </Card.Title>
+                </Card.ImgOverlay>
+              </Card>
+            </Link>
           </Col>
           <Col>
-            <Card>
-              <Card.Img variant='top' src={custom} fluid />
-              <Card.Body>
-                <Card.Title>Custom Requests</Card.Title>
-                <Card.Text>Check out our custom requests.</Card.Text>
-                <Button as={Link} to='/requests' variant='primary'>
-                  Go To Requests
-                </Button>
-              </Card.Body>
-            </Card>
+            <Link to='/requests'>
+              <Card>
+                <Card.Img src={custom} fluid alt='custom' />
+                <Card.ImgOverlay className='d-flex align-items-center justify-content-center'>
+                  <Card.Title
+                    style={{
+                      color: 'White',
+                      fontWeight: 'bold',
+                      textShadow: '1px 1px #000000',
+                      fontSize: '30pt',
+                    }}
+                  >
+                    Custom Requests
+                  </Card.Title>
+                </Card.ImgOverlay>
+              </Card>
+            </Link>
           </Col>
         </Row>
       </Container>

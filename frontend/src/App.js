@@ -6,6 +6,7 @@ import VendorSignupScreen from './screens/Signup/VendorSignupScreen';
 import TailorSignupScreen from './screens/Signup/TailorSignupScreen';
 import ProductsScreen from './screens/ProductsScreen';
 import ServicesScreen from './screens/ServicesScreen';
+import ServicesDetailsScreen from './screens/ServicesDetailsScreen';
 import CartScreen from './screens/CartScreen';
 import CustomRequestsSceen from './screens/CustomRequestsSceen';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -25,6 +26,7 @@ function App() {
           <Route path='/tailor' element={<TailorSignupScreen />} exact />
           <Route path='/products' element={<ProductsScreen />} exact />
           <Route path='/services' element={<ServicesScreen />} exact />
+          <Route path='/services/:id' element={<ServicesDetailsScreen />} />
           <Route path='/requests' element={<CustomRequestsSceen />} exact />
           <Route path='/product/:id' element={<ProductDetailsScreen />} />
           <Route path='/cart/'>

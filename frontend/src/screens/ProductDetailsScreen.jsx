@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { listProductDetails } from '../actions/productActions';
 import {
   Row,

@@ -6,10 +6,16 @@ import {
   productDetailsReducer,
 } from './reducers/productReducer';
 import { cartReducer } from './reducers/cartReducer';
+import {
+  serviceListReducer,
+  serviceDetailsReducer,
+} from './reducers/serviceReducer';
 
 const reducer = combineReducers({
   productList: productListReducer,
   productDetails: productDetailsReducer,
+  serviceList: serviceListReducer,
+  serviceDetails: serviceDetailsReducer,
   cart: cartReducer,
 });
 
