@@ -3,40 +3,30 @@ const Product = require("../Product/Product.model");
 const sendEmail = require("../../utils/emails/sendEmail");
 
 exports.newOrder = async (req, res, next) => {
-  try {
-    //place order (only tailor and user can place orders)
-    if (req.user.type === "vendor")
-      throw new Error("Please signup as a user or a tailor");
+  //place order (only tailor and user can place orders)
+  if (req.user.type === "vendor")
+    throw new Error("Please signup as a user or a tailor");
 
-    const orderLines = req.body.products;
+  const orderLines = req.body.products;
 
-    //external helper function to verify cart items
-    await verifyCartsizes(orderLines);
+  //external helper function to verify cart items
+  await verifyCartsizes(orderLines);
 
-    //make a new order and save it into db
-    const newOrder = new Order({
-      ownerId: req.user._id,
-      products: orderLines,
-    });
+  //make a new order and save it into db
+  const newOrder = new Order({
+    ownerId: req.user._id,
+    products: orderLines,
+  });
 
-    const savedOrder = await newOrder.save();
-    const purchasedProduct = await Promise.all(
-      savedOrder.products.map(async (element) => {
-        const prod = await Product.findById(element.productId);
-        return prod.name;
-      })
-    );
+  const savedOrder = await newOrder.save();
+  const purchasedProduct = await Promise.all(
+    savedOrder.products.map(async (element) => {
+      const prod = await Product.findById(element.productId);
+      return prod.name;
+    })
+  );
 
-    await sendEmail(
-      req.user.userMail,
-      "Ebra W Fatla Order Confirmation",
-      `<h3>Thank you ${req.user.username}</h3> 
-      `
-    );
-    res.json(savedOrder);
-  } catch (error) {
-    next(error);
-  }
+  res.send(200).json(purchasedProduct);
 };
 
 async function verifyCartsizes(orderLines) {
@@ -51,7 +41,7 @@ async function verifyCartsizes(orderLines) {
   for (let line = 0; line < orderLines.length; line++) {
     let sizeFlag = false;
     let colorFlag = false;
-    const product = await Product.findByIdAndUpdate(orderLines[line].productId);
+    const product = await Product.findOne(orderLines[line].productId);
     if (!product) {
       // if the product doesn't exist
       throw new Error(
