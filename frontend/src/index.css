@@ -26,3 +26,11 @@ code {
 .test div {
   margin-right: 10px;
 }
+
+.con {
+  overflow-x: hidden;
+}
+
+main {
+  min-height: 95vh;
+}
