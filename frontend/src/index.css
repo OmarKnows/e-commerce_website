@@ -34,3 +34,25 @@ code {
 main {
   min-height: 95vh;
 }
+
+.landingImage{
+  margin-top: 100px;
+  margin-bottom: 100px;
+  width: 100%;
+}
+.landingTitle{
+  position: absolute;
+  right: 70%;
+  left: 30%;
+  bottom: 40%;
+  color: White;
+  font-weight: bold;
+  text-shadow: 1px 1px #000000;
+  font-size: 70pt;
+}
+.cTitle{
+  color: white;
+  font-weight: bold !important;
+  text-shadow: 1px 1px #000000;
+  font-size: 30pt !important;
+}

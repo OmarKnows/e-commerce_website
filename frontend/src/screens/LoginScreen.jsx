@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const LoginScreen = () => {
   return (
@@ -26,6 +27,7 @@ const LoginScreen = () => {
                     placeholder='Password'
                   />
                 </div>
+
                 <div className='d-grid gap-2'>
                   <button type='submit' className='btn btn-primary my-3'>
                     Login
@@ -34,6 +36,10 @@ const LoginScreen = () => {
               </form>
             </div>
           </Card>
+        </div>
+        <div className='my-5'>
+          <p>Don't have an account?</p>
+          <Link to='/customer'>Sign Up</Link>
         </div>
       </div>
     </Container>

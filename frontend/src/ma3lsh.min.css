@@ -3962,7 +3962,8 @@ fieldset:disabled .btn {
   display: block;
 }
 .navbar {
-  position: relative;
+  position: fixed;
+  top: 0;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: wrap;
