@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+.fonT{
+    font-family: 'Roboto', sans-serif;
+}
+
 .marTop {
   margin-top: 200px;
 }
@@ -25,4 +29,62 @@ code {
 
 .test div {
   margin-right: 10px;
+}
+
+.con {
+  overflow-x: hidden;
+}
+
+main {
+  min-height: 95vh;
+}
+
+.landingImage{
+  margin-top: 100px;
+  margin-bottom: 100px;
+  width: 100%;
+}
+.landingTitle{
+  position: absolute;
+  right: 70%;
+  left: 30%;
+  bottom: 40%;
+  color: White;
+  font-weight: bold;
+  text-shadow: 1px 1px #000000;
+  font-size: 70pt;
+}
+.cTitle{
+  color: white;
+  font-weight: bold !important;
+  text-shadow: 1px 1px #000000;
+  font-size: 30pt !important;
+}
+.landingCard{
+  margin: auto;
+  height: 500px;
+  width: 350px;
+  transition: transform .2s;
+}
+.landingCard:hover{
+  transform: scale(1.1);
+}
+
+.test{
+  background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: cover;
+    height: 500px;
+    width: 350px;
+}
+
+.centerButton{
+  margin: 0 auto;
+  display: block;
+  text-align: center;
+  }
+
+.goBtn{
+  width: 65%;
+  font-size: 18pt !important;
 }

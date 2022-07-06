@@ -41,7 +41,7 @@ const CartScreen = () => {
   };
 
   return (
-    <Container style={{ marginTop: '100px' }}>
+    <Container style={{ marginTop: '150px' }}>
       <Row>
         <Col md={8}>
           <h1>Shopping Cart</h1>

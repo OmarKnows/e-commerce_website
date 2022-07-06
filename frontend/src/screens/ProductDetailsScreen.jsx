@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { listProductDetails } from '../actions/productActions';
 import {
   Row,
@@ -36,14 +35,14 @@ const ProductDetailsScreen = () => {
       <Container>
         <Row>
           <Col>
-            <Image src={product.photo} alt={product.name}></Image>
+            <Image src={product.img} alt={product.name}></Image>
           </Col>
           <Col>
             <ListGroup variant='flush'>
               <ListGroupItem>
                 <h3>{product.name}</h3>
               </ListGroupItem>
-              <ListGroupItem>Price: {'20'} EGP</ListGroupItem>
+              <ListGroupItem>{product.price} EGP</ListGroupItem>
               <ListGroupItem>Description: {product.description}</ListGroupItem>
             </ListGroup>
           </Col>
@@ -54,7 +53,7 @@ const ProductDetailsScreen = () => {
                   <Row>
                     <Col>Price:</Col>
                     <Col>
-                      <strong>{'20'}EGP</strong>
+                      <strong>{product.price} EGP</strong>
                     </Col>
                   </Row>
                 </ListGroupItem>

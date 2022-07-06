@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, Col, Row, Button, Container, Image } from 'react-bootstrap';
+import { Card, Col, Row, Container, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-
+import '../landing.css';
 import products from '../images/products.jpg';
 import services from '../images/services.jpg';
 import custom from '../images/custom.jpg';
@@ -10,47 +10,42 @@ import wallpaper from '../images/wallpaper.jpg';
 const LandingScreen = () => {
   return (
     <div>
-      <Image
-        src={wallpaper}
-        style={{ marginTop: '50px', marginBottom: '50px' }}
-      />
+      <div>
+        <Image src={wallpaper} className='landingImage' />
+        <h1 className='landingTitle fonT'>Placeholder Title</h1>
+      </div>
+
       <Container>
         <Row className='text-center'>
           <Col>
-            <Card>
-              <Card.Img variant='top' src={products} fluid />
-              <Card.Body>
-                <Card.Title>Products</Card.Title>
-                <Card.Text>Check out our products.</Card.Text>
-                <Button as={Link} to='/products' variant='primary'>
-                  Go To Products
-                </Button>
-              </Card.Body>
-            </Card>
+            <Link to='/products'>
+              <Card className='landingCard'>
+                <Card.Img className='test' src={products} fluid alt='women' />
+                <Card.ImgOverlay className='d-flex align-items-center justify-content-center con'>
+                  <Card.Title className='cTitle'>Products</Card.Title>
+                </Card.ImgOverlay>
+              </Card>
+            </Link>
           </Col>
           <Col>
-            <Card>
-              <Card.Img variant='top' src={services} fluid />
-              <Card.Body>
-                <Card.Title>Services</Card.Title>
-                <Card.Text>Check out our services.</Card.Text>
-                <Button as={Link} to='/services' variant='primary'>
-                  Go To Services
-                </Button>
-              </Card.Body>
-            </Card>
+            <Link to='/services'>
+              <Card className='landingCard'>
+                <Card.Img className='test' src={services} fluid alt='custom' />
+                <Card.ImgOverlay className='d-flex align-items-center justify-content-center'>
+                  <Card.Title className='cTitle'>Services</Card.Title>
+                </Card.ImgOverlay>
+              </Card>
+            </Link>
           </Col>
           <Col>
-            <Card>
-              <Card.Img variant='top' src={custom} fluid />
-              <Card.Body>
-                <Card.Title>Custom Requests</Card.Title>
-                <Card.Text>Check out our custom requests.</Card.Text>
-                <Button as={Link} to='/requests' variant='primary'>
-                  Go To Requests
-                </Button>
-              </Card.Body>
-            </Card>
+            <Link to='/requests'>
+              <Card className='landingCard'>
+                <Card.Img className='test' src={custom} fluid alt='custom' />
+                <Card.ImgOverlay className='d-flex align-items-center justify-content-center'>
+                  <Card.Title className='cTitle'>Custom Requests</Card.Title>
+                </Card.ImgOverlay>
+              </Card>
+            </Link>
           </Col>
         </Row>
       </Container>

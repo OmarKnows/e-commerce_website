@@ -5,51 +5,37 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
-    <header>
-      <Navbar
-        fixed='top'
-        className='navbar navbar-expand-lg navbar-dark bg-primary'
-        collapseOnSelect
-      >
-        <Container className='container-fluid'>
-          <LinkContainer to='/'>
-            <Navbar.Brand>E-Com</Navbar.Brand>
-          </LinkContainer>
-          <Navbar.Toggle aria-controls='basic-navbar-nav' />
-          <Navbar.Collapse id='basic-navbar-nav'>
-            <Nav className='ms-auto'>
-              <LinkContainer to='/cart'>
-                <Nav.Link>
-                  <i className='fas fa-shopping-cart'></i> Cart
-                </Nav.Link>
-              </LinkContainer>
-              <LinkContainer to='/login'>
-                <Nav.Link>
-                  <i className='fas fa-user'></i>
-                  Log in
-                </Nav.Link>
-              </LinkContainer>
-
-              <NavDropdown
-                id='nav-dropdown-dark-example'
-                title='Sign Up'
-                menuVariant='dark'
-              >
-                <NavDropdown.Item as={Link} to='/customer'>
-                  as a customer
-                </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to='/vendor'>
-                  as a vendor
-                </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to='/tailor'>
-                  as a tailor
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </header>
+    <Navbar
+      fixed='top'
+      className='navbar navbar-expand-lg navbar-light bg-light'
+      collapseOnSelect
+    >
+      <div className='d-flex justify-content-between p-4'>
+        <LinkContainer to='/'>
+          <Navbar.Brand className='navbar-brand'>Title</Navbar.Brand>
+        </LinkContainer>
+        <Navbar.Toggle aria-controls='basic-navbar-nav' />
+        <Navbar.Collapse id='basic-navbar-nav'>
+          <Nav className='me-auto'>
+            <LinkContainer to='/cart'>
+              <Nav.Link>
+                <i className='fas fa-shopping-cart fa-2x'></i>
+              </Nav.Link>
+            </LinkContainer>
+            <LinkContainer to='/login'>
+              <Nav.Link>
+                <i className='fas fa-user fa-2x'></i>
+              </Nav.Link>
+            </LinkContainer>
+            <LinkContainer to='/search'>
+              <Nav.Link>
+                <i className='fa-solid fa-magnifying-glass fa-2x'></i>
+              </Nav.Link>
+            </LinkContainer>
+          </Nav>
+        </Navbar.Collapse>
+      </div>
+    </Navbar>
   );
 };
 

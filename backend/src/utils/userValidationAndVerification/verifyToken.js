@@ -5,12 +5,8 @@ module.exports = {
     const token = req.header("auth_token");
     if (!token) return next(new Error("Please log in"));
 
-    try {
-      const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-      req.user = verifiedUser;
-      next();
-    } catch (err) {
-      next(new Error("Invalid Token"));
-    }
+    const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.user = verifiedUser;
+    next();
   },
 };
