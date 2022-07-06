@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 // const reviewSchema = mongoose.Schema(
 //   {
@@ -25,35 +25,45 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  rating: {
+    type: Number,
+  },
   gender: {
     type: String,
-    enum: ["Male", "Female"],
-    default: "Male",
+    enum: ['Male', 'Female'],
+    default: 'Male',
   },
   description: {
     type: String,
   },
   vendorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
   },
-  photo: {
+  img: {
     type: String,
   },
-  sizes: [
-    // different sizes and each one could have different colours and prices
-    {
-      sizeName: String,
-      price: Number,
-      color: [
-        {
-          colorName: String,
-          image: String,
-          quantity: Number,
-        },
-      ],
-    },
-  ],
-});
+  price: {
+    type: Number,
+    required: true,
+  },
 
-module.exports = mongoose.model("Product", productSchema);
+  // different colors with different sizes and each size has different qty
+  colors: {},
+})
+
+module.exports = mongoose.model('Product', productSchema)
+
+// sizes: [
+//
+//   {
+//     sizeName: String,
+//     color: [
+//       {
+//         colorName: String,
+//         image: String,
+//         quantity: Number,
+//       },
+//     ],
+//   },
+// ],
