@@ -13,7 +13,8 @@ import CustomRequestsSceen from './screens/CustomRequestsSceen';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Footer from './components/Footer';
 import ProductDetailsScreen from './screens/ProductDetailsScreen';
-//taller landing cards, navbar allignment, search page, margin tops
+import CustomFormScreen from './screens/CustomFormScreen';
+//taller landing cards, navbar allignment
 function App() {
   return (
     <Router>
@@ -29,6 +30,7 @@ function App() {
           <Route path='/services' element={<ServicesScreen />} exact />
           <Route path='/services/:id' element={<ServicesDetailsScreen />} />
           <Route path='/requests' element={<CustomRequestsSceen />} exact />
+          <Route path='/requests/form' element={<CustomFormScreen />} exact />
           <Route path='/product/:id' element={<ProductDetailsScreen />} />
           <Route path='/cart/'>
             <Route path='' element={<CartScreen />} exact />

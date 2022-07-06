@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+.fonT{
+    font-family: 'Roboto', sans-serif;
+}
+
 .marTop {
   margin-top: 200px;
 }
@@ -55,4 +59,32 @@ main {
   font-weight: bold !important;
   text-shadow: 1px 1px #000000;
   font-size: 30pt !important;
+}
+.landingCard{
+  margin: auto;
+  height: 500px;
+  width: 350px;
+  transition: transform .2s;
+}
+.landingCard:hover{
+  transform: scale(1.1);
+}
+
+.test{
+  background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: cover;
+    height: 500px;
+    width: 350px;
+}
+
+.centerButton{
+  margin: 0 auto;
+  display: block;
+  text-align: center;
+  }
+
+.goBtn{
+  width: 65%;
+  font-size: 18pt !important;
 }

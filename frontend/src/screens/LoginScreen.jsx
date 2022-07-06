@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const LoginScreen = () => {
   return (
-    <Container style={{ marginTop: '100px' }}>
+    <Container style={{ marginTop: '150px' }}>
       <div className='text-center'>
         <h1>Login To Start Trading</h1>
         <div className='d-flex justify-content-center'>

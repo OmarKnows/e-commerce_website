@@ -13,10 +13,9 @@ const ServicesScreen = () => {
   useEffect(() => {
     dispatch(listServices());
   }, [dispatch]);
-  console.log(users);
   return (
     <>
-      <Container style={{ marginTop: '100px' }}>
+      <Container style={{ marginTop: '150px' }}>
         <h1>Our Tailors</h1>
         {loading ? (
           <Loader></Loader>

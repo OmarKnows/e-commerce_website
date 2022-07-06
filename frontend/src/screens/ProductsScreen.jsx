@@ -16,7 +16,7 @@ const ProductsScreen = () => {
 
   return (
     <>
-      <Container style={{ marginTop: '100px' }}>
+      <Container style={{ marginTop: '150px' }}>
         <h1>Latest Products</h1>
         {loading ? (
           <Loader></Loader>
