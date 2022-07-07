@@ -8,7 +8,6 @@ const CustomerSignupScreen = () => {
         <Col>
           <h1>Not Sure Why This Is Here</h1>
           <p>But it looks cool.</p>
-          <p>Customer 5awal</p>
         </Col>
         <Col>
           <Card>

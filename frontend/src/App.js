@@ -1,5 +1,4 @@
-import Header from './components/Header';
-//import NavBar from './components/NavBar';
+import NavBar from './components/NavBar';
 import LandingScreen from './screens/LandingScreen';
 import LoginScreen from './screens/LoginScreen';
 import CustomerSignupScreen from './screens/Signup/CustomerSignupScreen';
@@ -14,11 +13,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Footer from './components/Footer';
 import ProductDetailsScreen from './screens/ProductDetailsScreen';
 import CustomFormScreen from './screens/CustomFormScreen';
-//taller landing cards, navbar allignment
+
 function App() {
   return (
     <Router>
-      <Header />
+      <NavBar />
       <main>
         <Routes>
           <Route path='/' element={<LandingScreen />} exact />

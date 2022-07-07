@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { listProductDetails } from "../actions/productActions";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { listProductDetails } from '../actions/productActions';
 import {
   Row,
   Col,
@@ -12,10 +12,10 @@ import {
   ListGroupItem,
   Form,
   Container,
-} from "react-bootstrap";
-import Rating from "../actions/Rating";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
+} from 'react-bootstrap';
+import Rating from '../actions/Rating';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
 
 const ProductDetailsScreen = () => {
   let navigate = useNavigate();
@@ -36,19 +36,19 @@ const ProductDetailsScreen = () => {
   };
 
   return (
-    <div style={{ marginTop: "150px", marginRight: "50px" }}>
+    <div style={{ marginTop: '150px', marginRight: '50px' }}>
       <Container>
         {loading ? (
           <Loader />
         ) : error ? (
-          <Message variant="danger">{error}</Message>
+          <Message variant='danger'>{error}</Message>
         ) : (
           <Row>
             <Col>
               <Image src={product.img} alt={product.name}></Image>
             </Col>
             <Col>
-              <ListGroup variant="flush">
+              <ListGroup variant='flush'>
                 <ListGroupItem>
                   <h3>{product.name}</h3>
                 </ListGroupItem>
@@ -56,28 +56,26 @@ const ProductDetailsScreen = () => {
                   Description: {product.description}
                 </ListGroupItem>
                 <ListGroupItem>
-                  <div class="form-group">
-                    <label for="exampleSelect1" class="form-label">
+                  <div class='form-group'>
+                    <label for='exampleSelect1' class='form-label'>
                       Colors
                     </label>
-                    <select class="form-select" id="exampleSelect1">
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
+                    <select class='form-select' id='exampleSelect1'>
+                      <option>Red</option>
+                      <option>Green</option>
+                      <option>Blue</option>
                     </select>
                   </div>
-                  <div class="form-group">
-                    <label for="exampleSelect1" class="form-label mt-2">
+                  <div class='form-group'>
+                    <label for='exampleSelect1' class='form-label mt-2'>
                       Sizes
                     </label>
-                    <select class="form-select" id="exampleSelect1">
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
+                    <select class='form-select' id='exampleSelect1'>
+                      <option>XS</option>
+                      <option>S</option>
+                      <option>M</option>
+                      <option>L</option>
+                      <option>XL</option>
                     </select>
                   </div>
                 </ListGroupItem>
@@ -85,7 +83,7 @@ const ProductDetailsScreen = () => {
             </Col>
             <Col>
               <Card>
-                <ListGroup variant="flush">
+                <ListGroup variant='flush'>
                   <ListGroupItem>
                     <Row>
                       <Col>Price:</Col>
@@ -105,7 +103,7 @@ const ProductDetailsScreen = () => {
                   <ListGroupItem>
                     <Row>
                       <Col>Status:</Col>
-                      <Col>{"In Stock"}</Col>
+                      <Col>{'In Stock'}</Col>
                     </Row>
                   </ListGroupItem>
                   <ListGroupItem>
@@ -113,7 +111,7 @@ const ProductDetailsScreen = () => {
                       <Col>Quantity:</Col>
                       <Col>
                         <Form.Control
-                          as="select"
+                          as='select'
                           value={qty}
                           onChange={(e) => setQty(e.target.value)}
                         >
@@ -132,8 +130,8 @@ const ProductDetailsScreen = () => {
                   </ListGroupItem>
                 </ListGroup>
                 <Button
-                  className="btn btn-lg btn-primary"
-                  type="button"
+                  className='btn btn-lg btn-primary'
+                  type='button'
                   onClick={addToCartHandler}
                 >
                   Add to Cart
